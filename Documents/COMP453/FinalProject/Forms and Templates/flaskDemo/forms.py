@@ -17,6 +17,9 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
     
-
+class MedicationForm(FlaskForm):
+    med = StringField('Medication', validators=[DataRequired()])
+    dailyFreq = IntegerField('Number of Times Taken Daily', validators=[DataRequired(), NumberRange(min=0, max=None)])
+    submit = SubmitField('Add this medication')
 
     

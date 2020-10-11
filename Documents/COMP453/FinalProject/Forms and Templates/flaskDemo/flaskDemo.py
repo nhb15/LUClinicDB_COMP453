@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, flash, redirect, request
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, MedicationForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -38,6 +38,15 @@ def register():
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/addMedication", methods=['GET', 'POST'])
+def addMedication():
+    form = MedicationForm()
+    if form.validate_on_submit():
+        flash(f'Medicine {form.med.data} added!', 'success')
+        return redirect(url_for('home'))
+    return render_template('addMedication.html', title='Add a Medication', form=form)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
