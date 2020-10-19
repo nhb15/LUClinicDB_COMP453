@@ -1,11 +1,14 @@
 /*
  *
  */
+ 
+ set FOREIGN_KEY_CHECKS=0;
 
-DROP TABLE IF EXISTS patient
-DROP TABLE IF EXISTS provider
-DROP TABLE IF EXISTS visit
-DROP TABLE IF EXISTS message
+DROP TABLE IF EXISTS visit;
+DROP TABLE IF EXISTS message;
+DROP TABLE IF EXISTS patient;
+DROP TABLE IF EXISTS provider;
+
 
 create table patient(
   patientID           int               not null auto_increment,
@@ -16,7 +19,7 @@ create table patient(
   patientPassword     varchar(15),
 
     primary key (patientID)
-    foreign key (patientPCP) references provider(providerID)
+    
 );
 
 create table provider(
@@ -34,27 +37,37 @@ create table visit(
   visitID             int            not null auto_increment,
   providerID          int            not null,
   patientID           int            not null,
-	visitDate           DATETIME,
+  visitDate           DATETIME,
   visitStatus         varchar(15),
 
     primary key (visitID)
-    foreign key (providerID) references provider(providerID)
-    foreign key (patientID) references patient(patientID)
+    
 ) ;
 
 create table message(
 	messageID          int             not null auto_increment,
-	senderID           int             not null,
-	recipientID        int             not null,
+	patientID          int             not null,
+	providerID         int             not null,
 	messageSubject     varchar(30),
 	messageBody        varchar(1000),
 	messageDate        DATETIME,
+	senderPT	   BOOLEAN,
 
     primary key (messageID)
-    /*foreign key (senderID) references p */
-
-/* set foreign_key_checks=0; */
+    
 );
+
+INSERT INTO patient
+(patientName, patientAddress, patientPhone, patientPCP,patientPassword)
+values
+("Bob", "102 Learning Lane", '1234567890', 1, "pass"),
+("Jane", "321 SQL Court", '234567890', 2, "pass");
+
+INSERT INTO provider
+(providerName, providerLicense, providerSpecialty, providerNPI, providerPassword)
+values
+("Kate", "Doctor", "Fam Med", '50562', "pass"),
+("Trevor", "Doctor", "Peds", '50626', "pass");
 
 INSERT INTO visit
 (providerID, patientID, visitDate, visitStatus)
@@ -65,15 +78,17 @@ values
 (1, 2, '2021-01-01 12:00:00', "Scheduled");
 
 INSERT INTO message
-(senderID, recipientID, subject, body, messageDate)
+(patientID, providerID, messageSubject, messageBody, messageDate, senderPT)
 values
-(1, 1, "advice", "I need advice about my diagnosis", '2008-11-11 13:23:44'),
-(2, 1, "medication question", "what does my med do", '2011-12-04 01:01:01'),
-(1, 1, "doc", "hello doc this is a message body", '2020-03-15 06:06:06');
+(1, 1, "advice", "I need advice about my diagnosis", '2008-11-11 13:23:44', 1),
+(2, 1, "medication question", "what does my med do", '2011-12-04 01:01:01', 1),
+(1, 1, "doc", "hello doc this is a message body", '2020-03-15 06:06:06', 1);
 
 
-/* set foreign_key_checks=1;  */
-/*
-alter table employee ADD foreign key (super_ssn) references employee(ssn);
-alter table employee ADD foreign key (dno) references department(dnumber);
-*/
+set foreign_key_checks=1;
+
+alter table patient ADD foreign key (patientPCP) references provider(providerID);
+alter table visit ADD foreign key (providerID) references provider(providerID);
+alter table visit ADD foreign key (patientID) references patient(patientID);
+alter table message ADD foreign key (patientID) references patient(patientID);
+alter table message ADD foreign key (providerID) references provider(providerID);
