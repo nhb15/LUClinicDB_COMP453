@@ -6,6 +6,8 @@
 
 DROP TABLE IF EXISTS visit;
 DROP TABLE IF EXISTS message;
+DROP TABLE IF EXISTS lab_order;
+DROP TABLE IF EXISTS lab_test;
 DROP TABLE IF EXISTS patient;
 DROP TABLE IF EXISTS provider;
 
@@ -57,6 +59,25 @@ create table message(
     
 );
 
+create table lab_order (
+	orderID				int				not null auto_increment,
+	patientID			int				not null,
+	cpt					varchar(15)		not null,
+	orderDate			DATE,			
+	completeDate		DATE,
+	results				varchar(50),
+	
+	primary key (orderID)	
+);
+
+create table lab_test (
+	cpt				varchar(15)		not null,
+	labName				varchar(15)		not null,
+	labType				char(1),
+
+	primary key (cpt)
+);
+
 INSERT INTO patient
 (patientName, patientAddress, patientPhone, patientPCP,patientPassword)
 values
@@ -84,6 +105,18 @@ values
 (2, 1, "medication question", "what does my med do", '2011-12-04 01:01:01', 1),
 (1, 1, "doc", "hello doc this is a message body", '2020-03-15 06:06:06', 1);
 
+INSERT INTO lab_order 
+(patientID, cpt, orderDate, completeDate, results)
+values
+(1, "CPT120", '2011-06-12', '2011-07-12', "Positive"),
+(2, "CPT240", '2019-08-01', '2019-09-01', "Negative");
+
+INSERT INTO lab_test
+(cpt, labName, labType)
+values
+("CPT120", "TestLab120", 'B'),
+("CPT240", "TestLab240", 'U');
+
 
 set foreign_key_checks=1;
 
@@ -92,3 +125,4 @@ alter table visit ADD foreign key (providerID) references provider(providerID);
 alter table visit ADD foreign key (patientID) references patient(patientID);
 alter table message ADD foreign key (patientID) references patient(patientID);
 alter table message ADD foreign key (providerID) references provider(providerID);
+alter table lab_order ADD foreign key (cpt) references lab_test(cpt)
