@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS visit;
 DROP TABLE IF EXISTS message;
 DROP TABLE IF EXISTS lab_order;
 DROP TABLE IF EXISTS lab_test;
+DROP TABLE IF EXISTS login;
 DROP TABLE IF EXISTS patient;
 DROP TABLE IF EXISTS provider;
 
@@ -18,8 +19,7 @@ create table patient(
   patientAddress      varchar(50)       not null,
   patientPhone        char(10)          not null,
   patientPCP          int,
-  patientPassword     varchar(15),
-
+  
     primary key (patientID)
     
 );
@@ -30,9 +30,16 @@ create table provider(
   providerLicense     varchar(10)       not null,
   providerSpecialty   varchar(30)       not null,
   providerNPI         char(10)          not null,
-  providerPassword    varchar(15),
-
+  
     primary key (providerID)
+);
+
+create table login(
+  email				varchar(255)		not null,
+  password			varchar(30)			not null,
+  loginType			char(3)				not null,
+  
+    primary key(email)  
 );
 
 create table visit(
@@ -79,16 +86,22 @@ create table lab_test (
 );
 
 INSERT INTO patient
-(patientName, patientAddress, patientPhone, patientPCP,patientPassword)
+(patientName, patientAddress, patientPhone, patientPCP)
 values
-("Bob", "102 Learning Lane", '1234567890', 1, "pass"),
-("Jane", "321 SQL Court", '234567890', 2, "pass");
+("Bob", "102 Learning Lane", '1234567890', 1),
+("Jane", "321 SQL Court", '234567890', 2);
 
 INSERT INTO provider
-(providerName, providerLicense, providerSpecialty, providerNPI, providerPassword)
+(providerName, providerLicense, providerSpecialty, providerNPI)
 values
-("Kate", "Doctor", "Fam Med", '50562', "pass"),
-("Trevor", "Doctor", "Peds", '50626', "pass");
+("Kate", "Doctor", "Fam Med", '50562'),
+("Trevor", "Doctor", "Peds", '50626');
+
+INSERT INTO login
+(email, password, loginType)
+values
+("provider@luc.edu", "pass", "prv"),
+("patient@luc.edu","pass","pat");
 
 INSERT INTO visit
 (providerID, patientID, visitDate, visitStatus)
