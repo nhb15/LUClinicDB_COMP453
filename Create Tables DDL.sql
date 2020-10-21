@@ -19,6 +19,7 @@ create table patient(
   patientAddress      varchar(50)       not null,
   patientPhone        char(10)          not null,
   patientPCP          int,
+  patientEmail	      varchar(255),
   
     primary key (patientID)
     
@@ -30,6 +31,7 @@ create table provider(
   providerLicense     varchar(10)       not null,
   providerSpecialty   varchar(30)       not null,
   providerNPI         char(10)          not null,
+  providerEmail	      varchar(255),
   
     primary key (providerID)
 );
@@ -86,16 +88,16 @@ create table lab_test (
 );
 
 INSERT INTO patient
-(patientName, patientAddress, patientPhone, patientPCP)
+(patientName, patientAddress, patientPhone, patientPCP, patientEmail)
 values
-("Bob", "102 Learning Lane", '1234567890', 1),
-("Jane", "321 SQL Court", '234567890', 2);
+("Bob", "102 Learning Lane", '1234567890', 1, "Bob@luc.edu"),
+("Jane", "321 SQL Court", '234567890', 2, "Jane@luc.edu");
 
 INSERT INTO provider
-(providerName, providerLicense, providerSpecialty, providerNPI)
+(providerName, providerLicense, providerSpecialty, providerNPI, providerEmail)
 values
-("Kate", "Doctor", "Fam Med", '50562'),
-("Trevor", "Doctor", "Peds", '50626');
+("Kate", "Doctor", "Fam Med", '50562', "Kate@luc.edu"),
+("Trevor", "Doctor", "Peds", '50626', "Trevor@luc.edu");
 
 INSERT INTO login
 (email, password, loginType)
