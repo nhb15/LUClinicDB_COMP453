@@ -5,6 +5,15 @@
       <div class="article-metadata">
         Provider's Profile page
       </div>
+      <div>
+        {% for row in provider_details %}
+		  <tr>
+		    {% for d in row %}
+		      <td>{{ d }}</td>
+		    {% endfor %}
+		  </tr>
+	    {% endfor %}
+	  </div>
     </div>
   </article>
 {% endblock content %}

@@ -1,16 +1,22 @@
-from flask import Flask, render_template, url_for, flash, redirect, request
+# Please run the following in your prompt:
+# pip install Flask-Session
+# pip install pry.py
+
+from flask import Flask, render_template, url_for, flash, redirect, request, session
 from .forms import RegistrationForm, LoginForm, MedicationForm
 from flask_mysqldb import MySQL
 import yaml
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, current_user, login_required
+# from flask.ext.session import Session
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_login import LoginManager, current_user, login_required
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
 # Configure db
-db = yaml.load(open('db.yaml'))
+# import pry; pry()
+db = yaml.load(open('LuClinic/db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_PORT'] = int(db['mysql_port'])
 app.config['MYSQL_USER'] = db['mysql_user']
@@ -43,8 +49,13 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         # To add logic based on login type
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('Welcome to', 'success')
+        # cur = mysql.connection.cursor()
+        # cur.execute("SELECT * FROM patient")
+        # patient = cur.fetchall()
+        if form.email.data == 'Trevor@luc.edu' and form.password.data == 'pass':
+            session['login_type'] = 'provider'
+            session['username'] = form.email.data
+            flash('Logged in successfully!', 'success')
             return redirect(url_for('profile'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
@@ -56,6 +67,13 @@ def login():
 def home():
     return redirect(url_for('login'))
 
+# currently redirects to login
+@app.route("/logout")
+def logout():
+    # We clear all sessions
+    session.clear()
+    return redirect(url_for('login'))    
+
 # Details to be added
 @app.route("/about")
 def about():
@@ -65,6 +83,8 @@ def about():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        # Add patient/provder to respictive table with an insert
+        # Also add email password and login_type to login table with an insert
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
@@ -72,23 +92,33 @@ def register():
 # LOGGED IN FLOW -------------------->
 
 @app.route("/profile")
-@login_required # This is a decorator to only allow uer to see the page iof they are logged in
+# @login_required # This is a decorator to only allow uer to see the page iof they are logged in
 def profile():
-    if form.login_type.data == 'patient':
+    # import pry; pry()
+    email = session['username']
+    if email is None:
+      flash(f'Please login first!', 'danger')
+    if session['login_type'] == 'provider':
+        # Find the tuple using the email id
+        # import pry; pry()
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM patient")
-        pname = cur.fetchall()
-        return render_template('patient_profile.html', title='Profile', patient_name=pname)
-    else:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM visit")
-        visit = cur.fetchall()
+        cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
+        # Using fetchone instead of fetchall since we know it will return one value
+        prvDetails = cur.fetchall()
 
-        return render_template('provider_profile.html', title='Provider', visit=visit)
+        # create session['patient_id'] = patients_id from above query
+        return render_template('provider_profile.html', title='Profile', provider_details=prvDetails)
+    else:
+        # Find the tuple using the email id in provider
+        # cur = mysql.connection.cursor()
+        # cur.execute("SELECT * FROM provider where email_id = email")
+        # visit = cur.fetchall()
+        # create session['provider_id'] = patients_id from above query
+        return render_template('provider_profile.html', title='Provider')
 
 
 @app.route("/addMedication", methods=['GET', 'POST'])
-@login_required # This is a decorator to only allow uer to see the page iof they are logged in
+# @login_required # This is a decorator to only allow uer to see the page iof they are logged in
 def addMedication():
     form = MedicationForm()
     if form.validate_on_submit():

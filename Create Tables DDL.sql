@@ -19,6 +19,7 @@ create table patient(
   patientAddress      varchar(50)       not null,
   patientPhone        char(10)          not null,
   patientPCP          int,
+  patientEmail        varchar(255),
   
     primary key (patientID)
     
@@ -30,14 +31,15 @@ create table provider(
   providerLicense     varchar(10)       not null,
   providerSpecialty   varchar(30)       not null,
   providerNPI         char(10)          not null,
+  providerEmail       varchar(255),
   
     primary key (providerID)
 );
 
 create table login(
-  email				varchar(255)		not null,
-  password			varchar(30)			not null,
-  loginType			char(3)				not null,
+  email       varchar(255)    not null,
+  password      varchar(30)     not null,
+  loginType     char(3)       not null,
   
     primary key(email)  
 );
@@ -54,53 +56,53 @@ create table visit(
 ) ;
 
 create table message(
-	messageID          int             not null auto_increment,
-	patientID          int             not null,
-	providerID         int             not null,
-	messageSubject     varchar(30),
-	messageBody        varchar(1000),
-	messageDate        DATETIME,
-	senderPT	   BOOLEAN,
+  messageID          int             not null auto_increment,
+  patientID          int             not null,
+  providerID         int             not null,
+  messageSubject     varchar(30),
+  messageBody        varchar(1000),
+  messageDate        DATETIME,
+  senderPT     BOOLEAN,
 
     primary key (messageID)
     
 );
 
 create table lab_order (
-	orderID				int				not null auto_increment,
-	patientID			int				not null,
-	cpt					varchar(15)		not null,
-	orderDate			DATE,			
-	completeDate		DATE,
-	results				varchar(50),
-	
-	primary key (orderID)	
+  orderID       int       not null auto_increment,
+  patientID     int       not null,
+  cpt         varchar(15)   not null,
+  orderDate     DATE,     
+  completeDate    DATE,
+  results       varchar(50),
+  
+  primary key (orderID) 
 );
 
 create table lab_test (
-	cpt				varchar(15)		not null,
-	labName				varchar(15)		not null,
-	labType				char(1),
+  cpt       varchar(15)   not null,
+  labName       varchar(15)   not null,
+  labType       char(1),
 
-	primary key (cpt)
+  primary key (cpt)
 );
 
 INSERT INTO patient
-(patientName, patientAddress, patientPhone, patientPCP)
+(patientName, patientAddress, patientPhone, patientPCP, patientEmail)
 values
-("Bob", "102 Learning Lane", '1234567890', 1),
-("Jane", "321 SQL Court", '234567890', 2);
+("Bob", "102 Learning Lane", '1234567890', 1, "Bob@luc.edu"),
+("Jane", "321 SQL Court", '234567890', 2, "Jane@luc.edu");
 
 INSERT INTO provider
-(providerName, providerLicense, providerSpecialty, providerNPI)
+(providerName, providerLicense, providerSpecialty, providerNPI, providerEmail)
 values
-("Kate", "Doctor", "Fam Med", '50562'),
-("Trevor", "Doctor", "Peds", '50626');
+("Kate", "Doctor", "Fam Med", '50562', "Kate@luc.edu"),
+("Trevor", "Doctor", "Peds", '50626', "Trevor@luc.edu");
 
 INSERT INTO login
 (email, password, loginType)
 values
-("provider@luc.edu", "pass", "prv"),
+("Trevor@luc.edu", "pass", "prv"),
 ("patient@luc.edu","pass","pat");
 
 INSERT INTO visit
