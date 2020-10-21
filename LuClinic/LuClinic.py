@@ -31,7 +31,10 @@ def testdb():
     cur.execute("SELECT * FROM visit")
     visit = cur.fetchall()
 
-    return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit)
+    cur.execute("SELECT pt.patientName, pt.patientAddress, prov.providerName FROM patient AS pt, provider AS prov WHERE pt.patientPCP = prov.providerID")
+    patientTable = cur.fetchall()
+
+    return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable)
 
 # LOGGED OUT FLOW -------------------->
 
@@ -72,12 +75,16 @@ def register():
 @login_required # This is a decorator to only allow uer to see the page iof they are logged in
 def profile():
     if form.login_type.data == 'patient':
-      cur = mysql.connection.cursor()
-      cur.execute("SELECT * FROM patient")
-      pname = cur.fetchall()
-      return render_template('patient_profile.html', title='Profile', patient_name=pname)
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM patient")
+        pname = cur.fetchall()
+        return render_template('patient_profile.html', title='Profile', patient_name=pname)
     else:
-      return render_template('provider_profile.html', title='Provider')
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM visit")
+        visit = cur.fetchall()
+
+        return render_template('provider_profile.html', title='Provider', visit=visit)
 
 
 @app.route("/addMedication", methods=['GET', 'POST'])

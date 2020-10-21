@@ -28,6 +28,7 @@
 		    </tr>
 		{% endfor %}
 </table>
+
 <table border="1" cellpadding="5" cellspacing="5">
 	<h1>Visit Table</h1>	
 		{% for row in visit %}
@@ -36,5 +37,48 @@
 		        <td>{{ d }}</td>
 		    {% endfor %}
 		    </tr>
-		{% endfor %}			
+		{% endfor %}
+</table>
+
+<!--<head>
+	<title>Bootstrap Example</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<div class="container">
+	<button type="button" class="btn btn-success">Add an Appt</button>
+	<button type="button" class="btn btn-primary">Update an Appt</button>
+	<button type="button" class="btn btn-danger">Cancel an Appt</button>
+</div>-->
+
+<!--attempt from here: https://getbootstrap.com/docs/4.0/content/tables/-->
+<table class="table table-striped table-dark">
+	<h1>Attempt at Join Patient Table</h1>
+	<thead>
+	<tr>
+		<th scope="col">#</th>
+		<th scope="col">First</th>
+		<th scope="col">Address</th>
+		<th scope="col">PCP</th>
+	</tr>
+	</thead>
+	<tbody>
+
+	{% for row in patientTable %}
+
+		<tr>
+			<th scope="row">{{loop.index}}</th>
+			{% for d in row %}
+
+				<td>{{d}} </td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+
+
+
 </table>
