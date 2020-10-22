@@ -19,7 +19,7 @@ create table patient(
   patientAddress      varchar(50)       not null,
   patientPhone        char(10)          not null,
   patientPCP          int,
-  patientEmail        varchar(255),
+  patientEmail	      varchar(255),
   
     primary key (patientID)
     
