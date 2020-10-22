@@ -15,13 +15,21 @@ Members of the project group are:
 # Business Requirements
 
 What is the title of this application?
+
 What is the organization/business for whom this application is being developed?
+
 What is the mission of this organization? 
+
 What is the purpose of this application?
+
 Why will this application support the mission of the organization?
+
 Provide an ER diagram of the database, both before and after any structural changes.  See point #3 under Technical Requirements.
+
 Walk through how this application is used, both as a user and as an adminstrator.
+
 During your demonstration, be sure to point out the technical specifications below. But make sure that the technical features make sense in the context of your application.  For example, if you are demonstrating an aggregate function, you might say, "This is a query that tells us how many orders each customer has placed.  This is useful if we are trying to analyze repeat business."
+
 You will probably find it easier to take screen shots of your data entry, validation and queries, and paste them into PPT slides.  In this way, your presentation will be smoother, you won't rely upon scrolling through results or navigating through your application during your presentation.  In addition, you won't have any unpleasant surprises if your server goes down or any other unanticipated issues arise.
 
 
