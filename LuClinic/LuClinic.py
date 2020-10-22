@@ -105,7 +105,7 @@ def profile():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
         # Using fetchone instead of fetchall since we know it will return one value
-        prvDetals = cur.fetchall()
+        prvDetails = cur.fetchall()
 
 
         # create session['patient_id'] = patients_id from above query
