@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
 
@@ -22,4 +22,11 @@ class MedicationForm(FlaskForm):
     dailyFreq = IntegerField('Number of Times Taken Daily', validators=[DataRequired(), NumberRange(min=0, max=None)])
     submit = SubmitField('Add this medication')
 
+class AddPatientForm(FlaskForm):
+    patientName = StringField("Patient Name", validators=[DataRequired(),Length(min=1, max=30)])
+    patientAddress = StringField("Patient Address", validators=[DataRequired(),Length(min=1, max=50)])
+    patientPhone = StringField("Patient Phone", validators=[DataRequired(),Length(min=1, max=10)])
+    patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
+    patientPCP = SelectField("Patient PCP", coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Add this patient')
     

@@ -3,8 +3,9 @@
 # pip install pry.py
 
 from flask import Flask, render_template, url_for, flash, redirect, request, session
-from .forms import RegistrationForm, LoginForm, MedicationForm
+from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm
 from flask_mysqldb import MySQL
+from MySQLdb.cursors import DictCursor
 import yaml
 # from flask.ext.session import Session
 # from flask_sqlalchemy import SQLAlchemy
@@ -16,9 +17,9 @@ app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
 # Configure db
 # import pry; pry()
-db = yaml.load(open('LuClinic/db.yaml'))
+db = yaml.load(open('db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
-app.config['MYSQL_PORT'] = int(db['mysql_port'])
+#app.config['MYSQL_PORT'] = int(db['mysql_port'])
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_db']
@@ -92,7 +93,7 @@ def register():
 # LOGGED IN FLOW -------------------->
 
 @app.route("/profile")
-# @login_required # This is a decorator to only allow uer to see the page iof they are logged in
+# @login_required # This is a decorator to only allow user to see the page if they are logged in
 def profile():
     # import pry; pry()
     email = session['username']
@@ -104,7 +105,8 @@ def profile():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
         # Using fetchone instead of fetchall since we know it will return one value
-        prvDetails = cur.fetchall()
+        prvDetals = cur.fetchall()
+
 
         # create session['patient_id'] = patients_id from above query
         return render_template('provider_profile.html', title='Profile', provider_details=prvDetails)
@@ -125,6 +127,21 @@ def addMedication():
         flash(f'Medicine {form.med.data} added!', 'success')
         return redirect(url_for('home'))
     return render_template('addMedication.html', title='Add a Medication', form=form)
+
+@app.route("/addPatient", methods=['GET', 'POST'])
+# @login_required # This is a decorator to only allow uer to see the page iof they are logged in
+def addPatient():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT providerName FROM provider")
+    providerNames = cur.fetchall()
+
+    form = AddPatientForm()
+
+    form.patientPCP.choices = providerNames
+    if form.validate_on_submit():
+        flash(f'Patient {form.patientName.data} added!', 'success')
+        return redirect(url_for('home'))
+    return render_template('addPatient.html', title='Add a Patient', form=form)
 
 if __name__ == '__main__':
     app.run(debug=True)
