@@ -31,15 +31,15 @@ create table provider(
   providerLicense     varchar(10)       not null,
   providerSpecialty   varchar(30)       not null,
   providerNPI         char(10)          not null,
-  providerEmail	      varchar(255),
+  providerEmail       varchar(255),
   
     primary key (providerID)
 );
 
 create table login(
-  email				varchar(255)		not null,
-  password			varchar(30)			not null,
-  loginType			char(3)				not null,
+  email       varchar(255)    not null,
+  password      varchar(30)     not null,
+  loginType     char(3)       not null,
   
     primary key(email)  
 );
@@ -56,35 +56,35 @@ create table visit(
 ) ;
 
 create table message(
-	messageID          int             not null auto_increment,
-	patientID          int             not null,
-	providerID         int             not null,
-	messageSubject     varchar(30),
-	messageBody        varchar(1000),
-	messageDate        DATETIME,
-	senderPT	   BOOLEAN,
+  messageID          int             not null auto_increment,
+  patientID          int             not null,
+  providerID         int             not null,
+  messageSubject     varchar(30),
+  messageBody        varchar(1000),
+  messageDate        DATETIME,
+  senderPT     BOOLEAN,
 
     primary key (messageID)
     
 );
 
 create table lab_order (
-	orderID				int				not null auto_increment,
-	patientID			int				not null,
-	cpt					varchar(15)		not null,
-	orderDate			DATE,			
-	completeDate		DATE,
-	results				varchar(50),
-	
-	primary key (orderID)	
+  orderID       int       not null auto_increment,
+  patientID     int       not null,
+  cpt         varchar(15)   not null,
+  orderDate     DATE,     
+  completeDate    DATE,
+  results       varchar(50),
+  
+  primary key (orderID) 
 );
 
 create table lab_test (
-	cpt				varchar(15)		not null,
-	labName				varchar(15)		not null,
-	labType				char(1),
+  cpt       varchar(15)   not null,
+  labName       varchar(15)   not null,
+  labType       char(1),
 
-	primary key (cpt)
+  primary key (cpt)
 );
 
 INSERT INTO patient
@@ -102,7 +102,7 @@ values
 INSERT INTO login
 (email, password, loginType)
 values
-("provider@luc.edu", "pass", "prv"),
+("Trevor@luc.edu", "pass", "prv"),
 ("patient@luc.edu","pass","pat");
 
 INSERT INTO visit
