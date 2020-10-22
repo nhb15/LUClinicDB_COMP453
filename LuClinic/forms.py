@@ -29,4 +29,5 @@ class AddPatientForm(FlaskForm):
     patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
     patientPCP = SelectField("Patient PCP", coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add this patient')
-    
+
+#Ideas for forms: Update Patient, Delete (cancel) appointment, Create Appt

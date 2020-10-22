@@ -59,9 +59,11 @@
                     {% endif %}
                 </div>
                 <div>
-                    <!--FIXME: this is the code that triggers an error for the select field. Not sure if the error IS here or in LuClinic or the forms though....-->
                     {{ form.patientPCP.label }}
-                    {{ form.patientPCP }}
+                    <div>
+                        {{ form.patientPCP }}
+                    </div>
+
                 </div>
 
             </fieldset>

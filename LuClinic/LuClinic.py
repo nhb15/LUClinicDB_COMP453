@@ -143,5 +143,7 @@ def addPatient():
         return redirect(url_for('profile'))
     return render_template('addPatient.html', title='Add a Patient', form=form)
 
+#Ideas for pages linking to provider profile: List appts (all or filtered by login provider?), list all patients, list MY patients, add patient, add provider, update patient, cancel appt(could be patient), etc
+
 if __name__ == '__main__':
     app.run(debug=True)
