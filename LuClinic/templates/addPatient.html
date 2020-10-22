@@ -58,20 +58,11 @@
                     {{ form.patientEmail(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="form-group">
-                    {{ form.patientPCP.label(class="form-control-label") }}
-                    {% if form.patientPCP.errors %}
-                    {{ form.patientPCP(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.patientPCP.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.patientPCP(class="form-control form-control-lg") }}
-                    {% endif %}
+                <div>
+                    <!--FIXME: this is the code that triggers an error for the select field. Not sure if the error IS here or in LuClinic or the forms though....-->
+                    {{ form.patientPCP.label }}
+                    {{ form.patientPCP }}
                 </div>
-
 
             </fieldset>
             <div class="form-group">

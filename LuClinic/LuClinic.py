@@ -132,7 +132,7 @@ def addMedication():
 # @login_required # This is a decorator to only allow uer to see the page iof they are logged in
 def addPatient():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT providerName FROM provider")
+    cur.execute("SELECT providerID, providerName FROM provider")
     providerNames = cur.fetchall()
 
     form = AddPatientForm()
@@ -140,7 +140,7 @@ def addPatient():
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
         flash(f'Patient {form.patientName.data} added!', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('profile'))
     return render_template('addPatient.html', title='Add a Patient', form=form)
 
 if __name__ == '__main__':
