@@ -143,6 +143,18 @@ def addPatient():
         return redirect(url_for('profile'))
     return render_template('addPatient.html', title='Add a Patient', form=form)
 
+@app.route("/myPatients")
+def myPatients():
+    email = session['username']
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT providerID FROM provider WHERE providerEmail = '%s'" % email)
+    providerID = cur.fetchone()
+
+    cur.execute("SELECT DISTINCT patientID, patientName, patientPhone FROM patient WHERE patientPCP = '%d'" % providerID)
+    patientTable = cur.fetchall()
+
+    return render_template('myPatients.html', patientTable=patientTable)
+
 #Ideas for pages linking to provider profile: List appts (all or filtered by login provider?), list all patients, list MY patients, add patient, add provider, update patient, cancel appt(could be patient), etc
 
 if __name__ == '__main__':
