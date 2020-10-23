@@ -91,7 +91,11 @@ INSERT INTO patient
 (patientName, patientAddress, patientPhone, patientPCP, patientEmail)
 values
 ("Bob", "102 Learning Lane", '1234567890', 1, "Bob@luc.edu"),
-("Jane", "321 SQL Court", '234567890', 2, "Jane@luc.edu");
+("Jane", "321 SQL Court", '234567890', 2, "Jane@luc.edu"),
+("Jacob", "133 Jake Lane", '3456789010', 2, "Jacob@luc.edu"),
+("John Doe", "666 SQL Lane", '0567891234', 2, "JohnDoe@luc.edu"),
+("Patient Name", "102 Patient Address", '8912345670', 1, "PatientName@luc.edu"),
+("Alexis", "321 street Court", '234567891', 2, "Alexis@luc.edu");
 
 INSERT INTO provider
 (providerName, providerLicense, providerSpecialty, providerNPI, providerEmail)
