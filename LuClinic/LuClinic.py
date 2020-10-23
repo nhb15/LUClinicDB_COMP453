@@ -3,7 +3,7 @@
 # pip install pry.py
 
 from flask import Flask, render_template, url_for, flash, redirect, request, session
-from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm
+from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm
 from flask_mysqldb import MySQL
 from MySQLdb.cursors import DictCursor
 import yaml
@@ -154,6 +154,23 @@ def myPatients():
     patientTable = cur.fetchall()
 
     return render_template('myPatients.html', patientTable=patientTable)
+
+@app.route("/modifyPatient/<patientID>", methods=['GET', 'POST'])
+def modifyPatient(patientID):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT providerID, providerName FROM provider")
+    providerNames = cur.fetchall()
+
+    form = ModifyPatientForm()
+
+    form.patientPCP.choices = providerNames
+    if form.validate_on_submit():
+        flash(f'Patient {form.patientName.data} modified!', 'success')
+        return redirect(url_for('myPatients'))
+    return render_template('myPatients.html', title='Modify a Patient', form=form)
+
+
+
 
 #Ideas for pages linking to provider profile: List appts (all or filtered by login provider?), list all patients, list MY patients, add patient, add provider, update patient, cancel appt(could be patient), etc
 
