@@ -139,6 +139,7 @@ def addPatient():
 
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
+        #FIXME: perform addition
         flash(f'Patient {form.patientName.data} added!', 'success')
         return redirect(url_for('profile'))
     return render_template('addPatient.html', title='Add a Patient', form=form)
@@ -164,10 +165,13 @@ def modifyPatient(patientID):
     form = ModifyPatientForm()
 
     form.patientPCP.choices = providerNames
+
     if form.validate_on_submit():
+        #FIXME: perform modification
         flash(f'Patient {form.patientName.data} modified!', 'success')
         return redirect(url_for('myPatients'))
-    return render_template('myPatients.html', title='Modify a Patient', form=form)
+
+    return render_template('modifyPatient.html', title='Modify a Patient', form=form)
 
 
 
