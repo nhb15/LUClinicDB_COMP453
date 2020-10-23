@@ -1,17 +1,38 @@
 {% include "layout.html" %}
-{% block content %}
-    <table border="1" cellpadding="5" cellspacing="5">
-        <h1>Patient Table</h1>
-        {% for row in patientTable %}
-        <tr>
-            {% for d in row %}
-            <td>{{ d }}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
-{% endblock content %}
 
-<div>
-    {% include "provider_layout.html" %}
-</div>
+<main role="main" class="container">
+    {% block content %}
+        
+<!-- FROM https://bbbootstrap.com/snippets/user-list-example-37903771 -->
+
+    <div class="page-content page-container" id="page-content">
+        <div class="padding">
+            <div class="row">
+                <div class="col-sm-6">
+
+                    <div class="list list-row block">
+
+                        {% for row in patientTable %}
+                        <div class="list-item" data-id="19">
+
+                            <div class="flex"> <a href="#" class="item-author text-color" data-abc="true">{{row[1]}}</a>
+                                <div class="item-except text-muted text-sm h-1x">Phone Number: {{row[2]}}</div>
+                            </div>
+                            <div class="no-wrap">
+                                <div class="item-date text-muted text-sm d-none d-md-block">Patient ID#: {{row[0]}}</div>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {% include "provider_layout.html" %}
+    </div>
+    {% endblock content %}
+</main>
