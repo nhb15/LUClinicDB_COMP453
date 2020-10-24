@@ -17,9 +17,9 @@ app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
 # Configure db
 # import pry; pry()
-db = yaml.load(open('db.yaml'))
+db = yaml.load(open('LuClinic/db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
-#app.config['MYSQL_PORT'] = int(db['mysql_port'])
+app.config['MYSQL_PORT'] = int(db['mysql_port'])
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_db']
@@ -47,76 +47,84 @@ def testdb():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        # To add logic based on login type
-        # cur = mysql.connection.cursor()
-        # cur.execute("SELECT * FROM patient")
-        # patient = cur.fetchall()
-        if form.email.data == 'Trevor@luc.edu' and form.password.data == 'pass':
-            session['login_type'] = 'provider'
-            session['username'] = form.email.data
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('profile'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+  form = LoginForm()
+  if form.validate_on_submit():
+    # Reasons for login table: We run search on email and password on a smaller table. 
+    # We only query customer/provider tables once we need to load the profile pages.
+    # We dont ask the user to mention whether they are patient or provider
+    
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT loginType FROM login where email = %s AND password = %s", (form.email.data, form.password.data))
+    
+    loginType = cur.fetchone()
+    
+    if loginType:
+      session['email'] = form.email.data
+      session['loginType'] = 'pat' if loginType[0] == 'pat' else 'prv'
+      import pry; pry()
+      flash('Logged in successfully!', 'success')
+      return redirect(url_for('profile'))
+    else:
+      flash('Login Unsuccessful. Please check username and password', 'danger')
+      render_template('login.html', title='Login', form=form)
+
+  return render_template('login.html', title='Login', form=form)
 
 # currently redirects to login
 @app.route("/")
 @app.route("/home")
 def home():
-    return redirect(url_for('login'))
+  return redirect(url_for('login'))
 
 # currently redirects to login
 @app.route("/logout")
 def logout():
-    # We clear all sessions
-    session.clear()
-    return redirect(url_for('login'))    
+  # We clear all sessions
+  session.clear()
+  return redirect(url_for('login'))    
 
 # Details to be added
 @app.route("/about")
 def about():
-    return render_template('about.html', title='About')
+  return render_template('about.html', title='About')
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        # Add patient/provder to respictive table with an insert
-        # Also add email password and login_type to login table with an insert
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
-    return render_template('register.html', title='Register', form=form)
+  form = RegistrationForm()
+  if form.validate_on_submit():
+      # Add patient/provder to respictive table with an insert
+      # Also add email password and login_type to login table with an insert
+      flash(f'Account created for {form.username.data}!', 'success')
+      return redirect(url_for('home'))
+  return render_template('register.html', title='Register', form=form)
 
 # LOGGED IN FLOW -------------------->
 
 @app.route("/profile")
 # @login_required # This is a decorator to only allow user to see the page if they are logged in
 def profile():
-    # import pry; pry()
-    email = session['username']
-    if email is None:
-      flash(f'Please login first!', 'danger')
-    if session['login_type'] == 'provider':
-        # Find the tuple using the email id
-        # import pry; pry()
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
-        # Using fetchone instead of fetchall since we know it will return one value
-        prvDetails = cur.fetchall()
+  # import pry; pry()
+  email = session['username']
+  if email is None:
+    flash(f'Please login first!', 'danger')
+  if session['login_type'] == 'provider':
+      # Find the tuple using the email id
+      # import pry; pry()
+      cur = mysql.connection.cursor()
+      cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
+      # Using fetchone instead of fetchall since we know it will return one value
+      prvDetails = cur.fetchall()
 
 
-        # create session['patient_id'] = patients_id from above query
-        return render_template('provider_profile.html', title='Profile', provider_details=prvDetails)
-    else:
-        # Find the tuple using the email id in provider
-        # cur = mysql.connection.cursor()
-        # cur.execute("SELECT * FROM provider where email_id = email")
-        # visit = cur.fetchall()
-        # create session['provider_id'] = patients_id from above query
-        return render_template('provider_profile.html', title='Provider')
+      # create session['patient_id'] = patients_id from above query
+      return render_template('provider_profile.html', title='Profile', provider_details=prvDetails)
+  else:
+      # Find the tuple using the email id in provider
+      # cur = mysql.connection.cursor()
+      # cur.execute("SELECT * FROM provider where email_id = email")
+      # visit = cur.fetchall()
+      # create session['provider_id'] = patients_id from above query
+      return render_template('provider_profile.html', title='Provider')
 
 
 @app.route("/addMedication", methods=['GET', 'POST'])
