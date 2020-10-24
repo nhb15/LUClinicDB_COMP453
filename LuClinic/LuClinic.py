@@ -104,27 +104,26 @@ def register():
 # @login_required # This is a decorator to only allow user to see the page if they are logged in
 def profile():
   # import pry; pry()
-  email = session['username']
-  if email is None:
-    flash(f'Please login first!', 'danger')
-  if session['login_type'] == 'provider':
-      # Find the tuple using the email id
-      # import pry; pry()
-      cur = mysql.connection.cursor()
-      cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
-      # Using fetchone instead of fetchall since we know it will return one value
-      prvDetails = cur.fetchall()
-
-
-      # create session['patient_id'] = patients_id from above query
-      return render_template('provider_profile.html', title='Profile', provider_details=prvDetails)
+  if session['email']:
+    email = session['email']
+    if session['loginType'] == 'prv':
+        # Find the tuple using the email id
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
+        # Using fetchone instead of fetchall since we know it will return one value
+        prvDetails = cur.fetchall()
+        # session['providerId'] = patients_id from above query
+        return render_template('provider_profile.html', title='Profile', provider_details=prvDetails)
+    else:
+        # Find the tuple using the email id in provider
+        # cur = mysql.connection.cursor()
+        # cur.execute("SELECT * FROM provider where email_id = email")
+        # visit = cur.fetchall()
+        # create session['provider_id'] = patients_id from above query
+        return render_template('patient_profile.html', title='Patient')
   else:
-      # Find the tuple using the email id in provider
-      # cur = mysql.connection.cursor()
-      # cur.execute("SELECT * FROM provider where email_id = email")
-      # visit = cur.fetchall()
-      # create session['provider_id'] = patients_id from above query
-      return render_template('provider_profile.html', title='Provider')
+    flash(f'Please login first!', 'danger')
+    return redirect(url_for('login'))
 
 
 @app.route("/addMedication", methods=['GET', 'POST'])
