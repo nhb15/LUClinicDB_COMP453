@@ -61,7 +61,7 @@ def login():
     if loginType:
       session['email'] = form.email.data
       session['loginType'] = 'pat' if loginType[0] == 'pat' else 'prv'
-      import pry; pry()
+      #import pry; pry()
       flash('Logged in successfully!', 'success')
       return redirect(url_for('profile'))
     else:
@@ -146,7 +146,7 @@ def addPatient():
 
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
-        #FIXME: perform addition
+        #FIXME: perform addition AND any necesary specific validations
         flash(f'Patient {form.patientName.data} added!', 'success')
         return redirect(url_for('profile'))
     return render_template('addPatient.html', title='Add a Patient', form=form)
