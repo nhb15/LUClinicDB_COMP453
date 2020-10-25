@@ -8,7 +8,7 @@ from flask_mysqldb import MySQL
 from MySQLdb.cursors import DictCursor
 import yaml
 # from flask.ext.session import Session
-# from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 # from flask_login import LoginManager, current_user, login_required
 
 app = Flask(__name__)
