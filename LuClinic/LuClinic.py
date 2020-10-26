@@ -11,7 +11,7 @@ from MySQLdb.cursors import DictCursor
 from flask_sqlalchemy import SQLAlchemy
 
 from .models import dbAlchemy,Patient, Provider
-from .__init__ import mysql, dbAlchemy, app, session
+from .__init__ import mysql, dbAlchemy, app, alchemySession
 # from flask_login import LoginManager, current_user, login_required
 
 
@@ -30,7 +30,7 @@ def testdb():
     cur.execute("SELECT pt.patientName, pt.patientAddress, prov.providerName FROM patient AS pt, provider AS prov WHERE pt.patientPCP = prov.providerID")
     patientTable = cur.fetchall()
 
-    testQuery = dbAlchemy.session.query(Patient.patientName)
+    testQuery = dbAlchemy.alchemySession.query(Patient.patientName)
 
     return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable, testQuery=testQuery)
 

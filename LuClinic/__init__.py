@@ -30,7 +30,7 @@ sqlAlchemy = engine.connect()
 
 Session = sessionmaker(bind=engine)
 
-session = Session()
+alchemySession = Session()
 from . import LuClinic
 from . import models
 
