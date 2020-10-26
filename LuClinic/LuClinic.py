@@ -143,6 +143,7 @@ def addPatient():
     return render_template('addPatient.html', title='Add a Patient', form=form)
 
 @app.route("/myPatients")
+# @login_required # This is a decorator to only allow uer to see the page if they are logged in
 def myPatients():
     email = session['username']
     cur = mysql.connection.cursor()
@@ -158,6 +159,7 @@ def myPatients():
     return render_template('myPatients.html', patientTable=patientTable, patientCount=patientCount)
 
 @app.route("/modifyPatient/<patientID>", methods=['GET', 'POST'])
+# @login_required # This is a decorator to only allow uer to see the page if they are logged in
 def modifyPatient(patientID):
     cur = mysql.connection.cursor()
     cur.execute("SELECT providerID, providerName FROM provider")
@@ -174,8 +176,14 @@ def modifyPatient(patientID):
 
     return render_template('modifyPatient.html', title='Modify a Patient', form=form)
 
-
-
+@app.route("/deletePatient/<patientID>", methods=['POST'])
+# @login_required # This is a decorator to only allow uer to see the page if they are logged in
+def delete_patient(patientID):
+    patient = Patient.query.get_or_404(patientID)
+    dbAlchemy.session.delete(patient)
+    dbAlchemy.session.commit()
+    flash('The patient has been deleted!', 'success')
+    return redirect(url_for('myPatients'))
 
 #Ideas for pages linking to provider profile: List appts (all or filtered by login provider?), list all patients, list MY patients, add patient, add provider, update patient, cancel appt(could be patient), etc
 

@@ -71,7 +71,7 @@
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
             <div class="form-group" >
-                <button type="button" class="btn-danger"> Delete This Patient Entirely </button>
+                <a type="button" class="btn-danger" href="url_for(delete_patient({{form.patientID}}))"> Delete This Patient Entirely </a>
             </div>
 
         </form>
