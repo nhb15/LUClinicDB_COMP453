@@ -79,6 +79,15 @@
 		</tr>
 	{% endfor %}
 
+</table>
 
-
+<table border="1" cellpadding="5" cellspacing="5">
+	<h1>SQL Alchemy Test Query</h1>
+	{% for row in testQuery %}
+	<tr>
+		{% for d in row %}
+		<td>{{ d }}</td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
 </table>

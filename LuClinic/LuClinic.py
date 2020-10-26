@@ -4,27 +4,16 @@
 
 from flask import Flask, render_template, url_for, flash, redirect, request, session
 from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm
-from flask_mysqldb import MySQL
+
 from MySQLdb.cursors import DictCursor
-import yaml
+
 # from flask.ext.session import Session
 from flask_sqlalchemy import SQLAlchemy
+
+from .models import dbAlchemy,Patient, Provider
+from .__init__ import mysql, dbAlchemy, app, session
 # from flask_login import LoginManager, current_user, login_required
 
-app = Flask(__name__)
-
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-
-# Configure db
-# import pry; pry()
-db = yaml.load(open('LuClinic/db.yaml'))
-app.config['MYSQL_HOST'] = db['mysql_host']
-app.config['MYSQL_PORT'] = int(db['mysql_port'])
-app.config['MYSQL_USER'] = db['mysql_user']
-app.config['MYSQL_PASSWORD'] = db['mysql_password']
-app.config['MYSQL_DB'] = db['mysql_db']
-
-mysql = MySQL(app)
 
 @app.route("/testdb")
 def testdb():
@@ -41,7 +30,9 @@ def testdb():
     cur.execute("SELECT pt.patientName, pt.patientAddress, prov.providerName FROM patient AS pt, provider AS prov WHERE pt.patientPCP = prov.providerID")
     patientTable = cur.fetchall()
 
-    return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable)
+    testQuery = dbAlchemy.session.query(Patient.patientName)
+
+    return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable, testQuery=testQuery)
 
 # LOGGED OUT FLOW -------------------->
 
