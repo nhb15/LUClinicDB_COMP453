@@ -33,15 +33,12 @@ class ModifyPatientForm(FlaskForm):
     submit = SubmitField('Confirm changes on this patient')
 
 class AddPatientForm(ModifyPatientForm):
-    #Inherit from Modify Patient Form - change the submit button. 
+    #Inherit from Modify Patient Form - change the submit button.
     #patientName = StringField("Patient Name", validators=[DataRequired(),Length(min=1, max=30)])
     #patientAddress = StringField("Patient Address", validators=[DataRequired(),Length(min=1, max=50)])
     #patientPhone = StringField("Patient Phone", validators=[DataRequired(),Length(min=1, max=10)])
     #patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
     #patientPCP = SelectField("Patient PCP", coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add this patient')
-
-
-
 
 #Ideas for forms: Update Patient, Delete (cancel) appointment, Create Appt

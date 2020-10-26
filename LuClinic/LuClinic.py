@@ -152,7 +152,10 @@ def myPatients():
     cur.execute("SELECT DISTINCT patientID, patientName, patientPhone FROM patient WHERE patientPCP = '%d'" % providerID)
     patientTable = cur.fetchall()
 
-    return render_template('myPatients.html', patientTable=patientTable)
+    cur.execute("SELECT DISTINCT COUNT(patientID) FROM patient WHERE patientPCP = '%d'" % providerID)
+    patientCount = cur.fetchone()
+
+    return render_template('myPatients.html', patientTable=patientTable, patientCount=patientCount)
 
 @app.route("/modifyPatient/<patientID>", methods=['GET', 'POST'])
 def modifyPatient(patientID):
