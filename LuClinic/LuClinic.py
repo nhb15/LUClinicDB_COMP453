@@ -30,7 +30,7 @@ def testdb():
     cur.execute("SELECT pt.patientName, pt.patientAddress, prov.providerName FROM patient AS pt, provider AS prov WHERE pt.patientPCP = prov.providerID")
     patientTable = cur.fetchall()
 
-    testQuery = dbAlchemy.alchemySession.query(Patient.patientName)
+    testQuery = dbAlchemy.session.query(Patient.patientName)
 
     return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable, testQuery=testQuery)
 
