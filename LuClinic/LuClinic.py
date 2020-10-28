@@ -179,17 +179,17 @@ def modifyPatient(patientID):
         #FIXME: perform modification
         #setattr(patient, 'patientName', form.patientName.data)
         #alchemySession.add(patient)
-        patient.patientName = form.patientName.data
-        patient.patientAddress = form.patientAddress.data
-        patient.patientPhone = form.patientPhone.data
-        patient.patientEmail = form.patientEmail.data
-        patient.patientPCP = form.patientPCP.data
+        #patient.patientName = form.patientName.data
+        #patient.patientAddress = form.patientAddress.data
+        #patient.patientPhone = form.patientPhone.data
+        #patient.patientEmail = form.patientEmail.data
+        #patient.patientPCP = form.patientPCP.data
 
         #Patient.query(Patient).filter_by(patientID == patientID).update({'patientName' : form.patientName.data})
-        dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data))
+        dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data))
 
         dbAlchemy.session.commit()
-        flash(f'Patient {patient.patientName} modified!', 'success')
+        flash(f'Patient {form.patientName.data} modified!', 'success')
         return redirect(url_for('myPatients'))
 
     elif request.method == 'GET':
