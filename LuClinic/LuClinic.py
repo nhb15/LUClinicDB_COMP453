@@ -4,13 +4,14 @@
 
 from flask import Flask, render_template, url_for, flash, redirect, request, session
 from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm
+from sqlalchemy.orm import sessionmaker, Session
 
 from MySQLdb.cursors import DictCursor
 
 # from flask.ext.session import Session
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import dbAlchemy,Patient, Provider
+from .models import Patient, Provider
 from .__init__ import mysql, dbAlchemy, app, alchemySession
 # from flask_login import LoginManager, current_user, login_required
 
@@ -30,7 +31,7 @@ def testdb():
     cur.execute("SELECT pt.patientName, pt.patientAddress, prov.providerName FROM patient AS pt, provider AS prov WHERE pt.patientPCP = prov.providerID")
     patientTable = cur.fetchall()
 
-    testQuery = dbAlchemy.session.query(Patient.patientName)
+    testQuery = alchemySession.query(Patient.patientName)
 
     return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable, testQuery=testQuery)
 
@@ -48,6 +49,8 @@ def login():
     cur.execute("SELECT loginType FROM login where email = %s AND password = %s", (form.email.data, form.password.data))
     
     loginType = cur.fetchone()
+
+
     
     if loginType:
       session['email'] = form.email.data
@@ -163,15 +166,8 @@ def myPatients():
 def modifyPatient(patientID):
 
     form = ModifyPatientForm()
-
-
-
-    patient = Patient.query.get_or_404(patientID)
-    form.patientName.data = patient.patientName
-    form.patientAddress.data = patient.patientAddress
-    form.patientPhone.data = patient.patientPhone
-    form.patientEmail.data = patient.patientEmail
-    form.patientPCP.data = patient.patientPCP
+    #patient = Patient.query.get_or_404(patientID)
+    patient = alchemySession.query(Patient).filter(Patient.patientID == patientID).first()
 
     #Populate SelectField with potential provider names
     cur = mysql.connection.cursor()
@@ -181,10 +177,27 @@ def modifyPatient(patientID):
 
     if form.validate_on_submit():
         #FIXME: perform modification
-        
-        flash(f'Patient {form.patientName.data} modified!', 'success')
+        #setattr(patient, 'patientName', form.patientName.data)
+        #alchemySession.add(patient)
+        patient.patientName = form.patientName.data
+        patient.patientAddress = form.patientAddress.data
+        patient.patientPhone = form.patientPhone.data
+        patient.patientEmail = form.patientEmail.data
+        patient.patientPCP = form.patientPCP.data
+
+        #Patient.query(Patient).filter_by(patientID == patientID).update({'patientName' : form.patientName.data})
+        dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data))
+
+        dbAlchemy.session.commit()
+        flash(f'Patient {patient.patientName} modified!', 'success')
         return redirect(url_for('myPatients'))
 
+    elif request.method == 'GET':
+        form.patientName.data = patient.patientName
+        form.patientAddress.data = patient.patientAddress
+        form.patientPhone.data = patient.patientPhone
+        form.patientEmail.data = patient.patientEmail
+        form.patientPCP.data = patient.patientPCP
     return render_template('modifyPatient.html', title='Modify a Patient', form=form)
 
 @app.route("/deletePatient/<patientID>", methods=['POST'])

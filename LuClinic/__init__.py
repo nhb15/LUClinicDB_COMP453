@@ -26,14 +26,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = CONN_STR
 mysql = MySQL(app)
 dbAlchemy = SQLAlchemy(app)
 engine = create_engine(CONN_STR)
-sqlAlchemy = engine.connect()
+#sqlAlchemy = engine.connect()
+
 
 Session = sessionmaker(bind=engine)
 
 alchemySession = Session()
+
+
 from . import LuClinic
 from . import models
-
 
 
 
