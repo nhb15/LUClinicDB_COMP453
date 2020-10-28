@@ -10,7 +10,7 @@ Members of the project group are:
 - Nate Boldt
 - Valerie Boudas
 
-
+LAB 4 C LINK: https://docs.google.com/document/d/1E3MqRDxqg0adEL1X2GCCbNieWF-a_31V9HadYXwtaZw/edit?usp=sharing
 
 # Business Requirements
 
