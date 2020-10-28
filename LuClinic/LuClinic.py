@@ -161,16 +161,27 @@ def myPatients():
 @app.route("/modifyPatient/<patientID>", methods=['GET', 'POST'])
 # @login_required # This is a decorator to only allow uer to see the page if they are logged in
 def modifyPatient(patientID):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT providerID, providerName FROM provider")
-    providerNames = cur.fetchall()
 
     form = ModifyPatientForm()
 
+
+
+    patient = Patient.query.get_or_404(patientID)
+    form.patientName.data = patient.patientName
+    form.patientAddress.data = patient.patientAddress
+    form.patientPhone.data = patient.patientPhone
+    form.patientEmail.data = patient.patientEmail
+    form.patientPCP.data = patient.patientPCP
+
+    #Populate SelectField with potential provider names
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT providerID, providerName FROM provider")
+    providerNames = cur.fetchall()
     form.patientPCP.choices = providerNames
 
     if form.validate_on_submit():
         #FIXME: perform modification
+        
         flash(f'Patient {form.patientName.data} modified!', 'success')
         return redirect(url_for('myPatients'))
 
