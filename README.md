@@ -10,7 +10,7 @@ Members of the project group are:
 - Nate Boldt
 - Valerie Boudas
 
-
+LAB 4 C LINK: https://docs.google.com/document/d/1E3MqRDxqg0adEL1X2GCCbNieWF-a_31V9HadYXwtaZw/edit?usp=sharing
 
 # Business Requirements
 
@@ -51,6 +51,8 @@ Include at least one simple SELECT SQL statement.  Use regular SQL for this.  Th
 Include one query using Flask-SQLAlchemy filter or filter_by.
 
 Inlcude at least one SELECT using an aggregate function.  Use regualr SQL for this.
+  Within the myPatients route, we select a count of the patients for the logged in provider. 
+  cur.execute("SELECT DISTINCT COUNT(patientID) FROM patient WHERE patientPCP = '%d'" % providerID)
 
 Include at least one SELECT using a compound condition using regular SQL, and also the equivalent of a compound condition select using Flask-SQLAlchemy.
 

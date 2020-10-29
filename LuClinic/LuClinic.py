@@ -4,27 +4,17 @@
 
 from flask import Flask, render_template, url_for, flash, redirect, request, session
 from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm
-from flask_mysqldb import MySQL
+from sqlalchemy.orm import sessionmaker, Session
+
 from MySQLdb.cursors import DictCursor
-import yaml
+
 # from flask.ext.session import Session
-# from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
+
+from .models import Patient, Provider
+from .__init__ import mysql, dbAlchemy, app, alchemySession
 # from flask_login import LoginManager, current_user, login_required
 
-app = Flask(__name__)
-
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-
-# Configure db
-# import pry; pry()
-db = yaml.load(open('LUClinic/db.yaml'))
-app.config['MYSQL_HOST'] = db['mysql_host']
-#app.config['MYSQL_PORT'] = int(db['mysql_port'])
-app.config['MYSQL_USER'] = db['mysql_user']
-app.config['MYSQL_PASSWORD'] = db['mysql_password']
-app.config['MYSQL_DB'] = db['mysql_db']
-
-mysql = MySQL(app)
 
 @app.route("/testdb")
 def testdb():
@@ -41,7 +31,9 @@ def testdb():
     cur.execute("SELECT pt.patientName, pt.patientAddress, prov.providerName FROM patient AS pt, provider AS prov WHERE pt.patientPCP = prov.providerID")
     patientTable = cur.fetchall()
 
-    return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable)
+    testQuery = alchemySession.query(Patient.patientName)
+
+    return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable, testQuery=testQuery)
 
 # LOGGED OUT FLOW -------------------->
 
@@ -146,12 +138,13 @@ def addPatient():
 
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
-        #FIXME: perform addition
+        #FIXME: perform addition AND any necesary specific validations
         flash(f'Patient {form.patientName.data} added!', 'success')
         return redirect(url_for('profile'))
     return render_template('addPatient.html', title='Add a Patient', form=form)
 
 @app.route("/myPatients")
+# @login_required # This is a decorator to only allow uer to see the page if they are logged in
 def myPatients():
     email = session['email']
     cur = mysql.connection.cursor()
@@ -161,27 +154,58 @@ def myPatients():
     cur.execute("SELECT DISTINCT patientID, patientName, patientPhone FROM patient WHERE patientPCP = '%d'" % providerID)
     patientTable = cur.fetchall()
 
-    return render_template('myPatients.html', patientTable=patientTable)
+    cur.execute("SELECT DISTINCT COUNT(patientID) FROM patient WHERE patientPCP = '%d'" % providerID)
+    patientCount = cur.fetchone()
+
+    return render_template('myPatients.html', patientTable=patientTable, patientCount=patientCount)
 
 @app.route("/modifyPatient/<patientID>", methods=['GET', 'POST'])
+# @login_required # This is a decorator to only allow uer to see the page if they are logged in
 def modifyPatient(patientID):
+
+    form = ModifyPatientForm()
+    #patient = Patient.query.get_or_404(patientID)
+    patient = alchemySession.query(Patient).filter(Patient.patientID == patientID).first()
+
+    #Populate SelectField with potential provider names
     cur = mysql.connection.cursor()
     cur.execute("SELECT providerID, providerName FROM provider")
     providerNames = cur.fetchall()
-
-    form = ModifyPatientForm()
-
     form.patientPCP.choices = providerNames
 
     if form.validate_on_submit():
         #FIXME: perform modification
+        #setattr(patient, 'patientName', form.patientName.data)
+        #alchemySession.add(patient)
+        #patient.patientName = form.patientName.data
+        #patient.patientAddress = form.patientAddress.data
+        #patient.patientPhone = form.patientPhone.data
+        #patient.patientEmail = form.patientEmail.data
+        #patient.patientPCP = form.patientPCP.data
+
+        #Patient.query(Patient).filter_by(patientID == patientID).update({'patientName' : form.patientName.data})
+        dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data))
+
+        dbAlchemy.session.commit()
         flash(f'Patient {form.patientName.data} modified!', 'success')
         return redirect(url_for('myPatients'))
 
+    elif request.method == 'GET':
+        form.patientName.data = patient.patientName
+        form.patientAddress.data = patient.patientAddress
+        form.patientPhone.data = patient.patientPhone
+        form.patientEmail.data = patient.patientEmail
+        form.patientPCP.data = patient.patientPCP
     return render_template('modifyPatient.html', title='Modify a Patient', form=form)
 
-
-
+@app.route("/deletePatient/<patientID>", methods=['POST'])
+# @login_required # This is a decorator to only allow uer to see the page if they are logged in
+def delete_patient(patientID):
+    patient = Patient.query.get_or_404(patientID)
+    dbAlchemy.session.delete(patient)
+    dbAlchemy.session.commit()
+    flash('The patient has been deleted!', 'success')
+    return redirect(url_for('myPatients'))
 
 #Ideas for pages linking to provider profile: List appts (all or filtered by login provider?), list all patients, list MY patients, add patient, add provider, update patient, cancel appt(could be patient), etc
 
