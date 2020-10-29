@@ -139,6 +139,11 @@ def addPatient():
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
         #FIXME: perform addition AND any necesary specific validations
+
+        patient = Patient(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data)
+        dbAlchemy.session.add(patient)
+        dbAlchemy.session.commit()
+
         flash(f'Patient {form.patientName.data} added!', 'success')
         return redirect(url_for('profile'))
     return render_template('addPatient.html', title='Add a Patient', form=form)
