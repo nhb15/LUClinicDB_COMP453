@@ -43,7 +43,7 @@ def login():
   if form.validate_on_submit():
     # Reasons for login table: We run search on email and password on a smaller table.
     # We only query customer/provider tables once we need to load the profile pages.
-    # We dont ask the user to mention whether they are patient or provider
+    # We don't ask the user to mention whether they are patient or provider.
 
     cur = mysql.connection.cursor()
     cur.execute("SELECT loginType FROM login where email = %s AND password = %s", (form.email.data, form.password.data))
@@ -105,14 +105,14 @@ def profile():
         # Using fetchone instead of fetchall since we know it will return one value
         prvDetails = cur.fetchall()
         # session['providerId'] = patients_id from above query
-        return render_template('provider_profile.html', title='Profile', provider_details=prvDetails)
+        return render_template('provider_profile.html', title='Provider Profile', provider_details=prvDetails)
     else:
-        # Find the tuple using the email id in provider
-        # cur = mysql.connection.cursor()
-        # cur.execute("SELECT * FROM provider where email_id = email")
-        # visit = cur.fetchall()
+        # Find the tuple using the email id in patient
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM patient where patientEmail = '%s'" % str(email))
+        patient_details = cur.fetchall()
         # create session['provider_id'] = patients_id from above query
-        return render_template('patient_profile.html', title='Patient')
+        return render_template('patient_profile.html', title='Patient Profile', patient_details=patient_details)
   else:
     flash(f'Please login first!', 'danger')
     return redirect(url_for('login'))
