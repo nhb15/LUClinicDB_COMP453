@@ -148,7 +148,7 @@ def addPatient():
 @app.route("/myPatients")
 # @login_required # This is a decorator to only allow uer to see the page if they are logged in
 def myPatients():
-    email = session['username']
+    email = session['email']
     cur = mysql.connection.cursor()
     cur.execute("SELECT providerID FROM provider WHERE providerEmail = '%s'" % email)
     providerID = cur.fetchone()
