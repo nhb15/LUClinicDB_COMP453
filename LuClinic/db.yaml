@@ -1,6 +1,6 @@
 mysql_host: '127.0.0.1'
-mysql_user: 'valerie'
+mysql_user: 'root'
 #mysql_port: '8889'
 # Enter your password in field below
-mysql_password: 'killm3n0w'
+mysql_password: 'root'
 mysql_db: 'LUClinic'
