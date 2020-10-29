@@ -32,6 +32,4 @@ class Login(dbAlchemy.Model):
 
     __table__ = dbAlchemy.Model.metadata.tables['login']
 
-
-
 dbAlchemy.create_all()

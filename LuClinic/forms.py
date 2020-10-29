@@ -30,7 +30,7 @@ class MedicationForm(FlaskForm):
 
 
 class ModifyPatientForm(FlaskForm):
-
+    #FIXME: Updating an email should technically update the login table
 
     #If we validate against login, we won't know if we're just trying to change the same record, which will bounce back at us
     #We'll need to validate against both the provider and patient tables to make sure nobody has used the email.
@@ -40,7 +40,6 @@ class ModifyPatientForm(FlaskForm):
         provider = dbAlchemy.session.query(Provider).filter_by(providerEmail=self.patientEmail.data).first()
         if (patient and patient.patientID != self.patientID.data) or provider:
             raise ValidationError('That email is already being used. Please enter a different one!')
-
 
     patientID = HiddenField()
     patientName = StringField("Patient Name", validators=[DataRequired(),Length(min=1, max=30)])
