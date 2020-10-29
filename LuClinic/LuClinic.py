@@ -41,17 +41,15 @@ def testdb():
 def login():
   form = LoginForm()
   if form.validate_on_submit():
-    # Reasons for login table: We run search on email and password on a smaller table. 
+    # Reasons for login table: We run search on email and password on a smaller table.
     # We only query customer/provider tables once we need to load the profile pages.
     # We dont ask the user to mention whether they are patient or provider
-    
+
     cur = mysql.connection.cursor()
     cur.execute("SELECT loginType FROM login where email = %s AND password = %s", (form.email.data, form.password.data))
-    
+
     loginType = cur.fetchone()
 
-
-    
     if loginType:
       session['email'] = form.email.data
       session['loginType'] = 'pat' if loginType[0] == 'pat' else 'prv'
@@ -75,7 +73,7 @@ def home():
 def logout():
   # We clear all sessions
   session.clear()
-  return redirect(url_for('login'))    
+  return redirect(url_for('login'))
 
 # Details to be added
 @app.route("/about")
@@ -121,7 +119,7 @@ def profile():
 
 
 @app.route("/addMedication", methods=['GET', 'POST'])
-# @login_required # This is a decorator to only allow uer to see the page iof they are logged in
+# @login_required # This is a decorator to only allow user to see the page if they are logged in
 def addMedication():
     form = MedicationForm()
     if form.validate_on_submit():
@@ -130,7 +128,7 @@ def addMedication():
     return render_template('addMedication.html', title='Add a Medication', form=form)
 
 @app.route("/addPatient", methods=['GET', 'POST'])
-# @login_required # This is a decorator to only allow uer to see the page iof they are logged in
+# @login_required # This is a decorator to only allow user to see the page if they are logged in
 def addPatient():
     cur = mysql.connection.cursor()
     cur.execute("SELECT providerID, providerName FROM provider")
