@@ -1,3 +1,15 @@
+INSERT INTO login
+(email, password, loginType)
+values
+("Trevor@luc.edu", "pass", "prv"),
+("patient@luc.edu","pass","pat");
+
+INSERT INTO provider
+(providerName, providerLicense, providerSpecialty, providerNPI, providerEmail)
+values
+("Kate", "Doctor", "Fam Med", '50562', "Kate@luc.edu"),
+("Trevor", "Doctor", "Peds", '50626', "Trevor@luc.edu");
+
 INSERT INTO patient
 (patientName, patientAddress, patientPhone, patientPCP, patientEmail)
 values
@@ -7,18 +19,6 @@ values
 ("John Doe", "666 SQL Lane", '0567891234', 2, "JohnDoe@luc.edu"),
 ("Patient Name", "102 Patient Address", '8912345670', 1, "PatientName@luc.edu"),
 ("Alexis", "321 street Court", '234567891', 2, "Alexis@luc.edu");
-
-INSERT INTO provider
-(providerName, providerLicense, providerSpecialty, providerNPI, providerEmail)
-values
-("Kate", "Doctor", "Fam Med", '50562', "Kate@luc.edu"),
-("Trevor", "Doctor", "Peds", '50626', "Trevor@luc.edu");
-
-INSERT INTO login
-(email, password, loginType)
-values
-("Trevor@luc.edu", "pass", "prv"),
-("patient@luc.edu","pass","pat");
 
 INSERT INTO visit
 (providerID, patientID, visitDate, visitStatus)
