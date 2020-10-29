@@ -4,13 +4,18 @@
 
  set FOREIGN_KEY_CHECKS=0;
 
-DROP TABLE IF EXISTS visit;
-DROP TABLE IF EXISTS message;
-DROP TABLE IF EXISTS lab_order;
-DROP TABLE IF EXISTS lab_test;
-DROP TABLE IF EXISTS login;
 DROP TABLE IF EXISTS patient;
 DROP TABLE IF EXISTS provider;
+DROP TABLE IF EXISTS login;
+DROP TABLE IF EXISTS visit;
+DROP TABLE IF EXISTS message;
+DROP TABLE IF EXISTS lab_test;
+DROP TABLE IF EXISTS lab_order;
+DROP TABLE IF EXISTS diagnosis;
+DROP TABLE IF EXISTS health_issues;
+DROP TABLE IF EXISTS rx_substance;
+DROP TABLE IF EXISTS prescription;
+DROP TABLE IF EXISTS allergy;
 
 
 create table patient(
@@ -68,6 +73,14 @@ create table message(
 
 );
 
+create table lab_test (
+  cpt       varchar(15)   not null,
+  labName       varchar(15)   not null,
+  labType       char(1),
+
+  primary key (cpt)
+);
+
 create table lab_order (
   orderID       int       not null auto_increment,
   patientID     int       not null,
@@ -79,12 +92,41 @@ create table lab_order (
   primary key (orderID)
 );
 
-create table lab_test (
-  cpt       varchar(15)   not null,
-  labName       varchar(15)   not null,
-  labType       char(1),
+create table diagnosis (
+  icd_10_cm          varchar(7)      not null,
+  diagnosisName      varchar(50)     not null,
 
-  primary key (cpt)
+  primary key (icd_10_cm)
+);
+
+create table health_issues (
+  icd_10_cm     varchar(7)    not null,
+  patientID     int           not null,
+
+  primary key (icd_10_cm, patientID)
+);
+
+create table rx_substance (
+  rxID        varchar(10)     not null,
+  rxName      varchar(50)     not null,
+
+  primary key (rxID)
+);
+
+create table prescription (
+  rxID        varchar(10)     not null,
+  patientID     int           not null,
+  dosage      varchar (5)     not null,
+
+  primary key (rxID, patientID)
+);
+
+create table allergy (
+  rxID        varchar(10)     not null,
+  patientID     int           not null,
+  reaction      varchar(25)   not null,
+
+  primary key (rxID, patientID)
 );
 
 set foreign_key_checks=1;
@@ -94,4 +136,10 @@ alter table visit ADD foreign key (providerID) references provider(providerID);
 alter table visit ADD foreign key (patientID) references patient(patientID);
 alter table message ADD foreign key (patientID) references patient(patientID);
 alter table message ADD foreign key (providerID) references provider(providerID);
-alter table lab_order ADD foreign key (cpt) references lab_test(cpt)
+alter table lab_order ADD foreign key (cpt) references lab_test(cpt);
+alter table health_issues ADD foreign key (icd_10_cm) references diagnosis(icd_10_cm);
+alter table health_issues ADD foreign key (patientID) references patient(patientID);
+alter table prescription ADD foreign key (rxID) references rx_substance(rxID);
+alter table prescription ADD foreign key (patientID) references patient(patientID);
+alter table allergy ADD foreign key (rxID) references rx_substance(rxID);
+alter table allergy ADD foreign key (patientID) references patient(patientID);
