@@ -29,9 +29,9 @@ engine = create_engine(CONN_STR)
 #sqlAlchemy = engine.connect()
 
 
-Session = sessionmaker(bind=engine)
+#Session = sessionmaker(bind=engine)
 
-alchemySession = Session()
+#alchemySession = Session()
 
 
 from . import LuClinic

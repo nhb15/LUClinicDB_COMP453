@@ -28,5 +28,10 @@ class Patient(dbAlchemy.Model):
     #patientPCP = dbAlchemy.Column(dbAlchemy.Integer, ForeignKey(Provider.providerID))
     #patientEmail = dbAlchemy.Column(dbAlchemy.String(255), unique=True)
 
+class Login(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['login']
+
+
 
 dbAlchemy.create_all()

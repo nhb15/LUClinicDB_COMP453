@@ -12,7 +12,7 @@ from MySQLdb.cursors import DictCursor
 from flask_sqlalchemy import SQLAlchemy
 
 from .models import Patient, Provider
-from .__init__ import mysql, dbAlchemy, app, alchemySession
+from .__init__ import mysql, dbAlchemy, app
 # from flask_login import LoginManager, current_user, login_required
 
 
@@ -31,7 +31,7 @@ def testdb():
     cur.execute("SELECT pt.patientName, pt.patientAddress, prov.providerName FROM patient AS pt, provider AS prov WHERE pt.patientPCP = prov.providerID")
     patientTable = cur.fetchall()
 
-    testQuery = alchemySession.query(Patient.patientName)
+    testQuery = dbAlchemy.session.query(Patient.patientName)
 
     return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable, testQuery=testQuery)
 
@@ -136,6 +136,7 @@ def addPatient():
 
     form = AddPatientForm()
 
+
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
         #FIXME: perform addition AND any necesary specific validations
@@ -170,13 +171,14 @@ def modifyPatient(patientID):
 
     form = ModifyPatientForm()
     #patient = Patient.query.get_or_404(patientID)
-    patient = alchemySession.query(Patient).filter(Patient.patientID == patientID).first()
+    patient = dbAlchemy.session.query(Patient).filter(Patient.patientID == patientID).first()
 
     #Populate SelectField with potential provider names
     cur = mysql.connection.cursor()
     cur.execute("SELECT providerID, providerName FROM provider")
     providerNames = cur.fetchall()
     form.patientPCP.choices = providerNames
+    form.patientID = patientID
 
     if form.validate_on_submit():
         #FIXME: perform modification
