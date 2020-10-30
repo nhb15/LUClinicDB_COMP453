@@ -1,3 +1,8 @@
 # File Types #
 ##############
 *.pyc
+
+# User-Specific Files #
+#######################
+db.yaml
+LuClinic/db.yaml
