@@ -55,11 +55,11 @@ ERD located in Documentation folder.
 
 - **Provide the DDL as well as the INSERT SQL for creating the tables and initially populating the database.  You may do this in any text editor and then paste into the SQL window of PHMyAdmin, or you may use the DDL from the terminal or from within a Python program, as demonstrated in class.**
 
-Both the Create and Insert DDL SQL files are located in DDL folder.
+  * Both the Create and Insert DDL SQL files are located in DDL folder.
 
 - **Include at least one insertion of a new record that will occur during the execution of the application.  This will most likely be as the result of a transaction or some component that should be added to the database.  For instance, in our labs, we added a department, and we also added an employee-project assignment.  Both of these required the insertion of a new record in the database.  In regular SQL, this would use the INSERT statement.  However, you should use Flask-SQLAlchemy for this purpose.**
 
-See Add Patient
+  * See Add Patient
 
 - **Include at least one update of a record--changing an existing record, not adding a new one.  Use SQLAlchemy.**
 
@@ -67,12 +67,12 @@ See Add Patient
 
 - **Include at least one simple SELECT SQL statement.  Use regular SQL for this.  This will require a database connection using one of packages that were showed in Lab-4-connect.**
 
-See My Patients and View Appointments
+  * See My Patients and View Appointments
 
 - **Include one query using Flask-SQLAlchemy filter or filter_by.**
 
 - **Inlcude at least one SELECT using an aggregate function.  Use regualr SQL for this.**
-Within the myPatients route, we select a count of the patients for the logged in provider.
+  * Within the myPatients route, we select a count of the patients for the logged in provider.
 `cur.execute("SELECT DISTINCT COUNT(patientID) FROM patient WHERE patientPCP = '%d'" % providerID)`
 
 - **Include at least one SELECT using a compound condition using regular SQL, and also the equivalent of a compound condition select using Flask-SQLAlchemy.**
@@ -83,7 +83,7 @@ Within the myPatients route, we select a count of the patients for the logged in
 
 - **Use a form to collect user data, as shown in our CRUD labs.**
 
-See Registration Form
+  * See Registration Form
 
 - **Populate a field on a form or table from the database.  This would most likely be for your update, and you can model this directly off of our examples in class.**
 
@@ -99,7 +99,7 @@ See Registration Form
 
 - **Using additional flask or flask-sqlalchemy features that we did not cover in class.**
 
-Using Flask-Session
+  * Using Flask-Session
 
 - **Using additonal WTForms components that we did not cover in class. (Examples:  importing other html form components that we did not demonstrate in class; check boxes, radio buttons, etc. multiple drop-down boxes)**
 
