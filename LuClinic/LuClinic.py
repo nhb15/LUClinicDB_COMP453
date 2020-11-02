@@ -37,6 +37,12 @@ def testdb():
 
 # LOGGED OUT FLOW -------------------->
 
+# currently redirects to login
+@app.route("/")
+@app.route("/home")
+def home():
+  return redirect(url_for('login'))
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
   form = LoginForm()
@@ -63,22 +69,11 @@ def login():
   return render_template('login.html', title='Login', form=form)
 
 # currently redirects to login
-@app.route("/")
-@app.route("/home")
-def home():
-  return redirect(url_for('login'))
-
-# currently redirects to login
 @app.route("/logout")
 def logout():
   # We clear all sessions
   session.clear()
   return redirect(url_for('login'))
-
-# Details to be added
-@app.route("/about")
-def about():
-  return render_template('about.html', title='About')
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -117,40 +112,8 @@ def profile():
     flash(f'Please login first!', 'danger')
     return redirect(url_for('login'))
 
-
-@app.route("/addMedication", methods=['GET', 'POST'])
-# @login_required # This is a decorator to only allow user to see the page if they are logged in
-def addMedication():
-    form = MedicationForm()
-    if form.validate_on_submit():
-        flash(f'Medicine {form.med.data} added!', 'success')
-        return redirect(url_for('home'))
-    return render_template('addMedication.html', title='Add a Medication', form=form)
-
-@app.route("/addPatient", methods=['GET', 'POST'])
-# @login_required # This is a decorator to only allow user to see the page if they are logged in
-def addPatient():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT providerID, providerName FROM provider")
-    providerNames = cur.fetchall()
-
-    form = AddPatientForm()
-
-
-    form.patientPCP.choices = providerNames
-    if form.validate_on_submit():
-        #FIXME: perform addition AND any necesary specific validations
-
-        patient = Patient(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data)
-        dbAlchemy.session.add(patient)
-        dbAlchemy.session.commit()
-
-        flash(f'Patient {form.patientName.data} added!', 'success')
-        return redirect(url_for('profile'))
-    return render_template('addPatient.html', title='Add a Patient', form=form)
-
 @app.route("/myPatients")
-# @login_required # This is a decorator to only allow uer to see the page if they are logged in
+# @login_required # This is a decorator to only allow user to see the page if they are logged in
 def myPatients():
     email = session['email']
     cur = mysql.connection.cursor()
@@ -165,8 +128,29 @@ def myPatients():
 
     return render_template('myPatients.html', patientTable=patientTable, patientCount=patientCount)
 
+@app.route("/addPatient", methods=['GET', 'POST'])
+# @login_required # This is a decorator to only allow user to see the page if they are logged in
+def addPatient():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT providerID, providerName FROM provider")
+    providerNames = cur.fetchall()
+
+    form = AddPatientForm()
+
+    form.patientPCP.choices = providerNames
+    if form.validate_on_submit():
+        #FIXME: perform addition AND any necesary specific validations
+
+        patient = Patient(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data)
+        dbAlchemy.session.add(patient)
+        dbAlchemy.session.commit()
+
+        flash(f'Patient {form.patientName.data} added!', 'success')
+        return redirect(url_for('profile'))
+    return render_template('addPatient.html', title='Add a Patient', form=form)
+
 @app.route("/modifyPatient/<patientID>", methods=['GET', 'POST'])
-# @login_required # This is a decorator to only allow uer to see the page if they are logged in
+# @login_required # This is a decorator to only allow user to see the page if they are logged in
 def modifyPatient(patientID):
 
     form = ModifyPatientForm()
@@ -214,7 +198,35 @@ def delete_patient(patientID):
     flash('The patient has been deleted!', 'success')
     return redirect(url_for('myPatients'))
 
-#Ideas for pages linking to provider profile: List appts (all or filtered by login provider?), list all patients, list MY patients, add patient, add provider, update patient, cancel appt(could be patient), etc
+@app.route("/addMedication", methods=['GET', 'POST'])
+# @login_required # This is a decorator to only allow user to see the page if they are logged in
+def addMedication():
+    form = MedicationForm()
+    if form.validate_on_submit():
+        flash(f'Medicine {form.med.data} added!', 'success')
+        return redirect(url_for('home'))
+    return render_template('addMedication.html', title='Add a Medication', form=form)
+
+
+#is there anything differentiating how patients vs. providers access this or is it just based on what renders on their profile page?
+@app.route("/appointments", methods=['GET'])
+def appointments():
+    email = session['email']
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT patientID FROM patient WHERE patientEmail = '%s'" % email)
+    patientID = cur.fetchone()
+
+    cur.execute("SELECT visitDate, providerID, visitStatus FROM visit WHERE patientID = '%d'" % patientID)
+    appointments = cur.fetchall()
+
+    return render_template('appointments.html', appointments=appointments)
+
+#Ideas for pages linking to provider profile: list all patients, list MY patients, add patient, add provider, update patient, etc
+
+# Details to be added
+@app.route("/about")
+def about():
+  return render_template('about.html', title='About')
 
 if __name__ == '__main__':
     app.run(debug=True)
