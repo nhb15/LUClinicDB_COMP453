@@ -26,11 +26,19 @@ What is the organization/business for whom this application is being developed?
 
 What is the mission of this organization?
 
+**To provide quality medical care to all patients.**
+
 What is the purpose of this application?
+
+**Providers can review/update their patients health records and patients can review their own health records.**
 
 Why will this application support the mission of the organization?
 
+**Accurate and complete medical records are important for care of the patient.**
+
 Provide an ER diagram of the database, both before and after any structural changes.  See point #3 under Technical Requirements.
+
+**ERD located in Documentation folder.**
 
 Walk through how this application is used, both as a user and as an adminstrator.
 
@@ -47,13 +55,19 @@ Some of the technical specifications/components of the project:
 
 - Provide the DDL as well as the INSERT SQL for creating the tables and initially populating the database.  You may do this in any text editor and then paste into the SQL window of PHMyAdmin, or you may use the DDL from the terminal or from within a Python program, as demonstrated in class.
 
+**Both the Create and Insert DDL SQL files are located in DDL folder.**
+
 - Include at least one insertion of a new record that will occur during the execution of the application.  This will most likely be as the result of a transaction or some component that should be added to the database.  For instance, in our labs, we added a department, and we also added an employee-project assignment.  Both of these required the insertion of a new record in the database.  In regular SQL, this would use the INSERT statement.  However, you should use Flask-SQLAlchemy for this purpose.
+
+**Add Patient**
 
 - Include at least one update of a record--changing an existing record, not adding a new one.  Use SQLAlchemy.
 
 - Include at least one delete of a record.  Use SQLAlchemy.
 
 - Include at least one simple SELECT SQL statement.  Use regular SQL for this.  This will require a database connection using one of packages that were showed in Lab-4-connect.
+
+**My Patients, View Appointments**
 
 - Include one query using Flask-SQLAlchemy filter or filter_by.
 
@@ -69,11 +83,13 @@ Some of the technical specifications/components of the project:
 
 - Use a form to collect user data, as shown in our CRUD labs.
 
+**Registration Form**
+
 - Populate a field on a form or table from the database.  This would most likely be for your update, and you can model this directly off of our examples in class.
 
 - Check for empty data fields. You can use the built-in validations for this.
 
-- Implement referential intergrity.  Demonstrate what happens when it is violated. Or, if you constructed your program so that it can't be violated, demonstrate how it references a primary key and prevents a vioaltion of referential intergrity.  For example, if employee has a foreign key deptNo that references the primary key deptNo in the relation Department.  If you populate a drop-down box with existing department numbers, this will prevent the user from entering an invalid department number, thereby enforcing referential integrity.  We did something similar in Lab-4-c.  If you just have a text box, the user can enter a department number that doesn't exist, and you can demonstrate that this will cause a referential integrity error.  Either method is fine, but be clear on what you are trying to achieve and demonstrate.
+- Implement referential intergrity.  Demonstrate what happens when it is violated. Or, if you constructed your program so that it can't be violated, demonstrate how it references a primary key and prevents a violation of referential intergrity.  For example, if employee has a foreign key deptNo that references the primary key deptNo in the relation Department.  If you populate a drop-down box with existing department numbers, this will prevent the user from entering an invalid department number, thereby enforcing referential integrity.  We did something similar in Lab-4-c.  If you just have a text box, the user can enter a department number that doesn't exist, and you can demonstrate that this will cause a referential integrity error.  Either method is fine, but be clear on what you are trying to achieve and demonstrate.
 
 - Use an appropriate structure for your project package.  Any of the structures that we used in class is fine.  I would recommend using the structure that we used for Lab-4-c, as that is a good starting point for the project.
 
@@ -82,6 +98,8 @@ Some of the technical specifications/components of the project:
 # Goals for E.C.
 
 - Using additional flask or flask-sqlalchemy features that we did not cover in class.
+
+**Session**
 
 - Using additonal WTForms components that we did not cover in class. (Examples:  importing other html form components that we did not demonstrate in class; check boxes, radio buttons, etc. multiple drop-down boxes)
 
