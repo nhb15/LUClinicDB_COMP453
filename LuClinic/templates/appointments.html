@@ -1,0 +1,19 @@
+{% extends "patient_layout.html" %}
+
+{% block content %}
+  {% for appointment in appointments %}
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <! -- Need to figure out why the first method of referencing the dictionary values isn't working.-->
+          <a class="mr-2" href="#">{{ appointment.providerID }}</a>
+          <a class="mr-2" href="#">{{ appointment[1] }}</a>
+      </div>
+      <h2><a class="article-title" href="#">{{ appointment.visitDate }}</a></h2>
+      <h2><a class="article-title" href="#">{{ appointment[0] }}</a></h2>
+      <p class="article-content">{{ appointment.visitStatus }}</p>
+      <p class="article-content">{{ appointment[2] }}</p>
+      </div>
+    </article>
+  {% endfor %}
+{% endblock content %}

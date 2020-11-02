@@ -1,8 +1,4 @@
-/*
- *
- */
-
- set FOREIGN_KEY_CHECKS=0;
+set FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS patient;
 DROP TABLE IF EXISTS provider;
@@ -16,7 +12,6 @@ DROP TABLE IF EXISTS health_issues;
 DROP TABLE IF EXISTS rx_substance;
 DROP TABLE IF EXISTS prescription;
 DROP TABLE IF EXISTS allergy;
-
 
 create table patient(
   patientID           int               not null auto_increment,
@@ -58,7 +53,7 @@ create table visit(
 
     primary key (visitID)
 
-) ;
+);
 
 create table message(
   messageID          int             not null auto_increment,
@@ -128,18 +123,3 @@ create table allergy (
 
   primary key (rxID, patientID)
 );
-
-set foreign_key_checks=1;
-
-alter table patient ADD foreign key (patientPCP) references provider(providerID);
-alter table visit ADD foreign key (providerID) references provider(providerID);
-alter table visit ADD foreign key (patientID) references patient(patientID);
-alter table message ADD foreign key (patientID) references patient(patientID);
-alter table message ADD foreign key (providerID) references provider(providerID);
-alter table lab_order ADD foreign key (cpt) references lab_test(cpt);
-alter table health_issues ADD foreign key (icd_10_cm) references diagnosis(icd_10_cm);
-alter table health_issues ADD foreign key (patientID) references patient(patientID);
-alter table prescription ADD foreign key (rxID) references rx_substance(rxID);
-alter table prescription ADD foreign key (patientID) references patient(patientID);
-alter table allergy ADD foreign key (rxID) references rx_substance(rxID);
-alter table allergy ADD foreign key (patientID) references patient(patientID);
