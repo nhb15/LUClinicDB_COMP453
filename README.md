@@ -53,6 +53,8 @@ ERD located in Documentation folder.
 
 - **Include at least one structural change to the database using DDL.  (Create, Alter, Drop). Clearly, your application will be written on one version of the design.  So you may satisfy this requirement by discussing what changes in the business requirements might precipitate a change in the design, and how would you implement that?  An example would be:  the design is based on the reality that every employee is assigned to exactly one department.  But the company has changed its management structure to a more project-based structure, and now, employees can be assigned to multiple departments.  This necessitates a change in the cardinaly of department:employee from 1:n to m:n.  This now requires a new relationship entity.  Other examples might include changing the format of a zip code from XXXXX to XXXXX-xxxx.**
 
+   * In progress.
+
 - **Provide the DDL as well as the INSERT SQL for creating the tables and initially populating the database.  You may do this in any text editor and then paste into the SQL window of PHMyAdmin, or you may use the DDL from the terminal or from within a Python program, as demonstrated in class.**
 
   * Both the Create and Insert DDL SQL files are located in DDL folder.
@@ -63,7 +65,11 @@ ERD located in Documentation folder.
 
 - **Include at least one update of a record--changing an existing record, not adding a new one.  Use SQLAlchemy.**
 
+  * In progress.
+
 - **Include at least one delete of a record.  Use SQLAlchemy.**
+
+  * In progress.
 
 - **Include at least one simple SELECT SQL statement.  Use regular SQL for this.  This will require a database connection using one of packages that were showed in Lab-4-connect.**
 
@@ -79,6 +85,8 @@ ERD located in Documentation folder.
 
 - **Include at least one JOIN query using SQL, and also one using Flask-SQLAlchemy.**
 
+  * In progress.
+
 - **Include at least one subquery.  Regular SQL.  Excellence points if you also use Flask-SQLAlchemy.**
 
 - **Use a form to collect user data, as shown in our CRUD labs.**
@@ -91,7 +99,11 @@ ERD located in Documentation folder.
 
 - **Implement referential intergrity.  Demonstrate what happens when it is violated. Or, if you constructed your program so that it can't be violated, demonstrate how it references a primary key and prevents a violation of referential intergrity.  For example, if employee has a foreign key deptNo that references the primary key deptNo in the relation Department.  If you populate a drop-down box with existing department numbers, this will prevent the user from entering an invalid department number, thereby enforcing referential integrity.  We did something similar in Lab-4-c.  If you just have a text box, the user can enter a department number that doesn't exist, and you can demonstrate that this will cause a referential integrity error.  Either method is fine, but be clear on what you are trying to achieve and demonstrate.**
 
+  * In progress.
+
 - **Use an appropriate structure for your project package.  Any of the structures that we used in class is fine.  I would recommend using the structure that we used for Lab-4-c, as that is a good starting point for the project.**
+
+  * In progress.
 
 ---
 
