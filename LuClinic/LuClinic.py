@@ -226,13 +226,13 @@ def visit(visitID):
     visit = Visit.query.get_or_404(visitID)
     return render_template('visit.html', title=visit.visitID, visit=visit)
 
-#@app.route/("/visit/<visitID>/cancel", methods=['POST'])
-#def cancel_visit(visitID):
-#    visit = visit.query.get_or_404(visitID)
-#    dbAlchemy.session.delete(visit)
-#    dbAlchemy.session.commit()
-#    flash('Your appointment has been cancelled.', 'success')
-#    return redirect(url_for('appointments'))
+@app.route("/visit/<visitID>/cancel", methods=['POST'])
+def cancel_visit(visitID):
+    visit = Visit.query.get_or_404(visitID)
+    dbAlchemy.session.delete(visit)
+    dbAlchemy.session.commit()
+    flash('Your appointment has been cancelled.', 'success')
+    return redirect(url_for('appointments'))
 
 #Ideas for pages linking to provider profile: list all patients, list MY patients, add patient, add provider, update patient, etc
 
