@@ -32,4 +32,8 @@ class Login(dbAlchemy.Model):
 
     __table__ = dbAlchemy.Model.metadata.tables['login']
 
+class Visit(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['visit']
+
 dbAlchemy.create_all()

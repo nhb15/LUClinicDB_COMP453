@@ -1,21 +1,15 @@
-{% include "layout.html" %}
+{% extends "provider_layout.html" %}
 
-
-<main role="main" class="container">
-  {% block content %}
-    <article class="media content-section">
-      <div class="media-body">
-        <div class="article-metadata">
-          Provider's Profile page
-        </div>
-        <div>
-          Welcome, {{provider_details[0][2]}} {{provider_details[0][1] }}!
-
-        </div>
+{% block content %}
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        Provider's Profile page
       </div>
-    </article>
-  {% endblock content %}
-  <div>
-      {% include "provider_layout.html" %}
-  </div>
-</main>
+      <div>
+        Welcome, {{provider_details[0][2]}} {{provider_details[0][1] }}!
+
+      </div>
+    </div>
+  </article>
+{% endblock content %}

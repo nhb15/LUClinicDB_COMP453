@@ -11,7 +11,7 @@ from MySQLdb.cursors import DictCursor
 # from flask.ext.session import Session
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import Patient, Provider
+from .models import Patient, Provider, Visit
 from .__init__ import mysql, dbAlchemy, app
 # from flask_login import LoginManager, current_user, login_required
 
@@ -216,10 +216,23 @@ def appointments():
     cur.execute("SELECT patientID FROM patient WHERE patientEmail = '%s'" % email)
     patientID = cur.fetchone()
 
-    cur.execute("SELECT visitDate, providerID, visitStatus FROM visit WHERE patientID = '%d'" % patientID)
+    cur.execute("SELECT visitID, visitDate, visit.providerID, providerName, visitStatus FROM visit, provider WHERE patientID = '%d' AND visit.providerID = provider.providerID" % patientID)
     appointments = cur.fetchall()
 
     return render_template('appointments.html', appointments=appointments)
+
+@app.route("/visit/<visitID>")
+def visit(visitID):
+    visit = Visit.query.get_or_404(visitID)
+    return render_template('visit.html', title=visit.visitID, visit=visit)
+
+#@app.route/("/visit/<visitID>/cancel", methods=['POST'])
+#def cancel_visit(visitID):
+#    visit = visit.query.get_or_404(visitID)
+#    dbAlchemy.session.delete(visit)
+#    dbAlchemy.session.commit()
+#    flash('Your appointment has been cancelled.', 'success')
+#    return redirect(url_for('appointments'))
 
 #Ideas for pages linking to provider profile: list all patients, list MY patients, add patient, add provider, update patient, etc
 

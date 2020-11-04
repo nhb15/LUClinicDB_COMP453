@@ -6,13 +6,13 @@
       <div class="media-body">
         <div class="article-metadata">
           <! -- Need to figure out why the first method of referencing the dictionary values isn't working.-->
-          <a class="mr-2" href="#">{{ appointment.providerID }}</a>
-          <a class="mr-2" href="#">{{ appointment[1] }}</a>
+          <a class="mr-2" href="#">{{ appointment.providerName }}</a>
+          <a class="mr-2" href="#">{{ appointment[3] }}</a>
       </div>
       <h2><a class="article-title" href="#">{{ appointment.visitDate }}</a></h2>
-      <h2><a class="article-title" href="#">{{ appointment[0] }}</a></h2>
+      <h2><a class="article-title" href="#">{{ appointment[1] }}</a></h2>
       <p class="article-content">{{ appointment.visitStatus }}</p>
-      <p class="article-content">{{ appointment[2] }}</p>
+      <p class="article-content">{{ appointment[4] }}</p>
       </div>
     </article>
   {% endfor %}
