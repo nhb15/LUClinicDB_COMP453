@@ -1,40 +1,37 @@
-{% include "layout.html" %}
+{% extends "provider_layout.html" %}
 
-<main role="main" class="container">
-    {% block content %}
+  {% block content %}
 
 <!-- FROM https://bbbootstrap.com/snippets/user-list-example-37903771 -->
-    <div>
-        <a>Total Number of Patients in my Care: {{patientCount[0]}}</a>
-    </div>
-    <div class="page-content page-container" id="page-content">
-        <div class="padding">
-            <div class="row">
-                <div class="col-sm-6">
+  <div>
+      <a>Total Number of Patients in my Care: {{patientCount[0]}}</a>
+  </div>
+  <div class="page-content page-container" id="page-content">
+      <div class="padding">
+          <div class="row">
+              <div class="col-sm-6">
 
-                    <div class="list list-row block">
+                  <div class="list list-row block">
 
-                        {% for row in patientTable %}
-                        <div class="list-item" data-id="19">
+                      {% for row in patientTable %}
+                      <div class="list-item" data-id="19">
 
-                            <div class="flex"> <a href="{{url_for('modifyPatient', patientID = row[0])}}" class="item-author text-color" data-abc="true">{{row[1]}}</a>
-                                <div class="item-except text-muted text-sm h-1x">Phone Number: {{row[2]}}</div>
-                            </div>
-                            <div class="no-wrap">
-                                <div class="item-date text-muted text-sm d-none d-md-block">Patient ID#: {{row[0]}}</div>
-                            </div>
-                        </div>
+                          <div class="flex"> <a href="{{url_for('modifyPatient', patientID = row[0])}}" class="item-author text-color" data-abc="true">{{row[1]}}</a>
+                              <div class="item-except text-muted text-sm h-1x">Phone Number: {{row[2]}}</div>
+                          </div>
+                          <div class="no-wrap">
+                              <div class="item-date text-muted text-sm d-none d-md-block">Patient ID#: {{row[0]}}</div>
+                          </div>
+                      </div>
 
-                        {% endfor %}
-                    </div>
+                      {% endfor %}
+                  </div>
 
-                </div>
-            </div>
-        </div>
-    </div>
+              </div>
+          </div>
+      </div>
+  </div>
 
-    <div>
-        {% include "provider_layout.html" %}
-    </div>
-    {% endblock content %}
-</main>
+  <div>
+  </div>
+  {% endblock content %}
