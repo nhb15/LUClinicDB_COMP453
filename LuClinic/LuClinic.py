@@ -242,8 +242,15 @@ def cancel_visit(visitID):
 @app.route("/messages", methods=['GET', 'POST'])
 def myMessages():
 
+    email = session['email']
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT providerID FROM provider WHERE providerEmail = '%s'" % email)
+    providerID = cur.fetchone()
+    #Need to figure out best way to order by
+    cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, pat.patientName FROM message AS mess INNER JOIN patient AS pat USING (patientID) WHERE mess.providerID = '%d' ORDER BY mess.patientID, mess.messageDate" % providerID)
+    messages = cur.fetchall()
 
-    return render_template('provider_message.html')
+    return render_template('provider_message.html', providerID=providerID, messages=messages)
 
 # Details to be added
 @app.route("/about")
