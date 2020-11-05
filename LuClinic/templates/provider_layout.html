@@ -3,7 +3,7 @@
 {% block sidebar_content %}
 <li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="{{ url_for('addPatient') }}">Add a Patient</a></li>
 <!-- We can have "edit/delete patients here", even add patient (just have it above for testing)-->
-<li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="{{ url_for('myPatients') }}">My Patients<a></li>
+<li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="{{ url_for('myPatients') }}">My Patients</a></li>
 <li class="list-group-item list-group-item-light">My Appts</li>
-<li class="list-group-item list-group-item-light">My Messages</li>
+<li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="{{ url_for('myMessages') }}"> My Messages</a></li>
 {% endblock sidebar_content %}

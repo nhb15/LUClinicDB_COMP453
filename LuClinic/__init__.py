@@ -34,8 +34,6 @@ engine = create_engine(CONN_STR)
 #alchemySession = Session()
 
 
-from . import LuClinic
-from . import models
 
 
 

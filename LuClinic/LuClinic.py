@@ -130,6 +130,7 @@ def myPatients():
 
 @app.route("/addPatient", methods=['GET', 'POST'])
 # @login_required # This is a decorator to only allow user to see the page if they are logged in
+# Send email to LOGIN for this and modifyPatient and check email validator
 def addPatient():
     cur = mysql.connection.cursor()
     cur.execute("SELECT providerID, providerName FROM provider")
@@ -151,6 +152,7 @@ def addPatient():
 
 @app.route("/modifyPatient/<patientID>", methods=['GET', 'POST'])
 # @login_required # This is a decorator to only allow user to see the page if they are logged in
+# Send email to LOGIN for this and modifyPatient and check email validator
 def modifyPatient(patientID):
 
     form = ModifyPatientForm()
@@ -235,6 +237,13 @@ def cancel_visit(visitID):
     return redirect(url_for('appointments'))
 
 #Ideas for pages linking to provider profile: list all patients, list MY patients, add patient, add provider, update patient, etc
+
+
+@app.route("/messages", methods=['GET', 'POST'])
+def myMessages():
+
+
+    return render_template('provider_message.html')
 
 # Details to be added
 @app.route("/about")
