@@ -1,11 +1,43 @@
 {% extends "provider_layout.html" %}
+{% block content %}
 
-<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>My Messages</title>
 </head>
-<body>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 
-</body>
-</html>
+
+<div class="page-content page-container" id="page-content">
+    <div class="padding">
+        <div class="row">
+            <div class="col-sm-6">
+
+                <div class="list list-row block">
+
+                    {% for row in messages %}
+                    <div class="list-item" data-id="19">
+
+                        <div class="flex"> <a href="{{url_for('modifyPatient', patientID = row[0])}}" class="item-author text-color" data-abc="true">{{row[4]}}</a>
+                            <div class="item-except text-muted text-sm h-1x">Subject: {{row[1]}}</div>
+                        </div>
+                        <div class="no-wrap">
+                            <div class="item-date text-muted text-sm d-none d-md-block">Message: {{row[2]}}</div>
+                        </div>
+                        <div class="no-wrap">
+                            <div class="item-date text-muted text-sm d-none d-md-block">Time: {{row[3]}}</div>
+                        </div>
+                    </div>
+
+                    <hr/>
+
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
