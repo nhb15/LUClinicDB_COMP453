@@ -4,6 +4,7 @@
 
 from flask import Flask, render_template, url_for, flash, redirect, request, session
 from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm, replyMessageForm
+from datetime import datetime
 from sqlalchemy.orm import sessionmaker, Session
 
 from MySQLdb.cursors import DictCursor
@@ -263,7 +264,17 @@ def replyMessage(messageID):
     #Should be include message history? Maybe by searching over same patient-provider with same subject?
     message = Message.query.get_or_404(messageID)
 
+    if form.validate_on_submit():
 
+
+        newMessage = Message(messageSubject=form.messageSubject.data, messageBody=form.messageBody.data, patientID=message.patientID, providerID=message.providerID, messageDate=datetime.now(), senderPT=0)
+        dbAlchemy.session.add(newMessage)
+        dbAlchemy.session.commit()
+        flash(f'Message sent!', 'success')
+        return redirect(url_for('myMessages'))
+
+    elif request.method == 'GET':
+        form.messageSubject.data = message.messageSubject
 
     return render_template('replyMessage.html', message=message, form=form)
 
