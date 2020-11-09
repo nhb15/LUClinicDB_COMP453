@@ -63,5 +63,15 @@ class AddPatientForm(ModifyPatientForm):
     submit = SubmitField('Add this patient')
 
 
+class replyMessageForm(FlaskForm):
+
+    messageID = HiddenField()
+    patientID = HiddenField()
+    providerID = HiddenField()
+    messageSubject = StringField("Subject", validators=[DataRequired(), Length(min=1, max=30)])
+    messageBody = StringField("Body", validators=[DataRequired(), Length(min=1, max=1000)])
+    submit = SubmitField('Send Message')
+
+
 #Ideas for forms: Update Patient, Delete (cancel) appointment, Create Appt
 

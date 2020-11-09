@@ -36,4 +36,8 @@ class Visit(dbAlchemy.Model):
 
     __table__ = dbAlchemy.Model.metadata.tables['visit']
 
+class Message(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['message']
+
 dbAlchemy.create_all()

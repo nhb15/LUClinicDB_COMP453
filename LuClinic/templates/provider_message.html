@@ -23,7 +23,7 @@
                         </div>
                         <div class="no-wrap">
                             <div class="item-date text-muted text-sm d-none d-md-block">Message: {{row[2]}}</div>
-                            <a href="#link" class="btn btn-info" role="button">Reply</a>
+                            <a href="{{url_for('replyMessage', messageID=row[0])}}" class="btn btn-info" role="button">Reply</a>
                         </div>
                         <div class="no-wrap">
                             <div class="item-date text-muted text-sm d-none d-md-block">Time: {{row[3]}}</div>

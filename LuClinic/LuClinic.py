@@ -3,7 +3,7 @@
 # pip install pry.py
 
 from flask import Flask, render_template, url_for, flash, redirect, request, session
-from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm
+from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm, replyMessageForm
 from sqlalchemy.orm import sessionmaker, Session
 
 from MySQLdb.cursors import DictCursor
@@ -11,7 +11,7 @@ from MySQLdb.cursors import DictCursor
 # from flask.ext.session import Session
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import Patient, Provider, Visit
+from .models import Patient, Provider, Visit, Message
 from .__init__ import mysql, dbAlchemy, app
 # from flask_login import LoginManager, current_user, login_required
 
@@ -240,6 +240,7 @@ def cancel_visit(visitID):
 
 
 @app.route("/messages", methods=['GET', 'POST'])
+# @login_required # This is a decorator to only allow uer to see the page if they are logged in
 def myMessages():
 
     email = session['email']
@@ -252,6 +253,19 @@ def myMessages():
     messages = cur.fetchall()
 
     return render_template('provider_message.html', providerID=providerID, messages=messages)
+
+
+@app.route("/messages/<messageID>/reply", methods=['GET', 'POST'])
+# @login_required # This is a decorator to only allow uer to see the page if they are logged in
+def replyMessage(messageID):
+
+    form = replyMessageForm()
+    #Should be include message history? Maybe by searching over same patient-provider with same subject?
+    message = Message.get_or_404(messageID)
+
+
+
+    return render_template('reply_message.html', message=message, form=form)
 
 # Details to be added
 @app.route("/about")
