@@ -53,7 +53,7 @@ ERD located in Documentation folder.
 
 - **Include at least one structural change to the database using DDL.  (Create, Alter, Drop). Clearly, your application will be written on one version of the design.  So you may satisfy this requirement by discussing what changes in the business requirements might precipitate a change in the design, and how would you implement that?  An example would be:  the design is based on the reality that every employee is assigned to exactly one department.  But the company has changed its management structure to a more project-based structure, and now, employees can be assigned to multiple departments.  This necessitates a change in the cardinaly of department:employee from 1:n to m:n.  This now requires a new relationship entity.  Other examples might include changing the format of a zip code from XXXXX to XXXXX-xxxx.**
 
-   * In progress (Valerie).
+   * Currently, patients cannot reschedule appointments themselves.  Instead, a request to reschedule is sent as a message to the provider.  If patients were given the ability to reschedule on their own, they would need to know what days/times are available for scheduling. To accomplish this, another table (appointment_times) would need to be added with information about provider schedules and available appointment slots.  This table would have a 1:1 relationship with both the provider and visit tables (each available slot could only have one scheduled visit with one provider). ProviderID would be added as a FK in the appointment_times table and the visit table would need an additional FK referencing the PK of the appointment_times tuple that it references.
 
 - **Provide the DDL as well as the INSERT SQL for creating the tables and initially populating the database.  You may do this in any text editor and then paste into the SQL window of PHMyAdmin, or you may use the DDL from the terminal or from within a Python program, as demonstrated in class.**
 
@@ -73,7 +73,7 @@ ERD located in Documentation folder.
 
 - **Include at least one simple SELECT SQL statement.  Use regular SQL for this.  This will require a database connection using one of packages that were showed in Lab-4-connect.**
 
-  * See My Patients (Nate) and View Appointments (Valerie)
+  * See My Patients (Nate).
 
 - **Include one query using Flask-SQLAlchemy filter or filter_by.**
 
@@ -89,7 +89,7 @@ ERD located in Documentation folder.
 
 - **Include at least one JOIN query using SQL, and also one using Flask-SQLAlchemy.**
 
-  * In progress - View Appointments (SQL - Valerie). Need one using SQLAlchemy.
+  * In progress - View Appointments and Patient Profile (Valerie).
 
 - **Include at least one subquery.  Regular SQL.  Excellence points if you also use Flask-SQLAlchemy.**
 
