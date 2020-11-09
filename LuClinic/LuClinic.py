@@ -261,11 +261,11 @@ def replyMessage(messageID):
 
     form = replyMessageForm()
     #Should be include message history? Maybe by searching over same patient-provider with same subject?
-    message = Message.get_or_404(messageID)
+    message = Message.query.get_or_404(messageID)
 
 
 
-    return render_template('reply_message.html', message=message, form=form)
+    return render_template('replyMessage.html', message=message, form=form)
 
 # Details to be added
 @app.route("/about")
