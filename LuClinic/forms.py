@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField, ValidationError, HiddenField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField, ValidationError, HiddenField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 from .__init__ import dbAlchemy
 from .models import Patient, Login, Provider
@@ -69,7 +69,7 @@ class replyMessageForm(FlaskForm):
     patientID = HiddenField()
     providerID = HiddenField()
     messageSubject = StringField("Subject", validators=[DataRequired(), Length(min=1, max=30)])
-    messageBody = StringField("Body", validators=[DataRequired(), Length(min=1, max=1000)])
+    messageBody = TextAreaField("Body", validators=[DataRequired(), Length(min=1, max=1000)])
     submit = SubmitField('Send Message')
 
 
