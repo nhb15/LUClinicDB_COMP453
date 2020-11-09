@@ -9,8 +9,9 @@ DROP TABLE IF EXISTS lab_test;
 DROP TABLE IF EXISTS lab_order;
 DROP TABLE IF EXISTS diagnosis;
 DROP TABLE IF EXISTS health_issues;
-DROP TABLE IF EXISTS rx_substance;
+DROP TABLE IF EXISTS medication;
 DROP TABLE IF EXISTS prescription;
+DROP TABLE IF EXISTS allergen;
 DROP TABLE IF EXISTS allergy;
 
 create table patient(
@@ -37,9 +38,9 @@ create table provider(
 );
 
 create table login(
-  email       varchar(255)    not null,
+  email         varchar(255)    not null,
   password      varchar(30)     not null,
-  loginType     char(3)       not null,
+  loginType     char(3)         not null,
 
     primary key(email)
 );
@@ -48,8 +49,8 @@ create table visit(
   visitID             int            not null auto_increment,
   providerID          int            not null,
   patientID           int            not null,
-  visitDate           DATETIME,
-  visitStatus         varchar(15),
+  visitDate           DATETIME       not null,
+  visitStatus         varchar(15)    not null,
 
     primary key (visitID)
 
@@ -60,16 +61,16 @@ create table message(
   patientID          int             not null,
   providerID         int             not null,
   messageSubject     varchar(30),
-  messageBody        varchar(1000),
-  messageDate        DATETIME,
-  senderPT     BOOLEAN,
+  messageBody        varchar(1000)   not null,
+  messageDate        DATETIME        not null,
+  senderPT           BOOLEAN        not null,
 
     primary key (messageID)
 
 );
 
 create table lab_test (
-  cpt       varchar(15)   not null,
+  cpt           char(5)   not null,
   labName       varchar(15)   not null,
   labType       char(1),
 
@@ -77,12 +78,12 @@ create table lab_test (
 );
 
 create table lab_order (
-  orderID       int       not null auto_increment,
-  patientID     int       not null,
-  cpt         varchar(15)   not null,
-  orderDate     DATE,
+  orderID         int           not null auto_increment,
+  patientID       int           not null,
+  cpt             varchar(15)   not null,
+  orderDate       DATE          not null,
   completeDate    DATE,
-  results       varchar(50),
+  results         varchar(50),
 
   primary key (orderID)
 );
@@ -101,25 +102,36 @@ create table health_issues (
   primary key (icd_10_cm, patientID)
 );
 
-create table rx_substance (
-  rxID        varchar(10)     not null,
-  rxName      varchar(50)     not null,
+create table medication (
+  medID       int             not null auto_increment,
+  medName      varchar(50)     not null,
+
+  primary key (medID)
+);
+
+create table prescription (
+  rxID          int             not null auto_increment,
+  patientID     int             not null,
+  medID         int             not null,
+  dosage        varchar (5)     not null,
 
   primary key (rxID)
 );
 
-create table prescription (
-  rxID        varchar(10)     not null,
-  patientID     int           not null,
-  dosage      varchar (5)     not null,
+create table allergen (
+  allergenID     int                not null auto_increment,
+  allergenName   varchar(20)        not null,
+  allergenType           varchar(10)        not null,
 
-  primary key (rxID, patientID)
+  primary key (allergenID)
 );
 
 create table allergy (
-  rxID        varchar(10)     not null,
+  allergyID     int           not null auto_increment,
   patientID     int           not null,
+  medID         int,
+  allergenID    int,
   reaction      varchar(25)   not null,
 
-  primary key (rxID, patientID)
+  primary key (allergyID)
 );
