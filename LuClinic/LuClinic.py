@@ -264,8 +264,11 @@ def replyMessage(messageID):
     #Should be include message history? Maybe by searching over same patient-provider with same subject?
     message = Message.query.get_or_404(messageID)
 
-    if form.validate_on_submit():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM message AS mess INNER JOIN patient AS pat USING (patientID) INNER JOIN provider AS prov USING (providerID) WHERE mess.messageSubject = '%s' AND mess.patientID = '%d' AND mess.providerID = '%d'" % (message.messageSubject, message.patientID, message.providerID))
+    messageHistory = cur.fetchall()
 
+    if form.validate_on_submit():
 
         newMessage = Message(messageSubject=form.messageSubject.data, messageBody=form.messageBody.data, patientID=message.patientID, providerID=message.providerID, messageDate=datetime.now(), senderPT=0)
         dbAlchemy.session.add(newMessage)
@@ -276,7 +279,7 @@ def replyMessage(messageID):
     elif request.method == 'GET':
         form.messageSubject.data = message.messageSubject
 
-    return render_template('replyMessage.html', message=message, form=form)
+    return render_template('replyMessage.html', message=message, messageHistory=messageHistory, form=form)
 
 # Details to be added
 @app.route("/about")
