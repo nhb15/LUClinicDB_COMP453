@@ -263,7 +263,7 @@ def myMessages():
         patientID = cur.fetchone()
 
         #Need to figure out best way to order by
-        cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, prov.providerName, mess.senderPT FROM message AS mess INNER JOIN provider AS prov USING (providerID) INNER JOIN patient AS pat WHERE pat.patientID = '%d' ORDER BY mess.messageDate DESC " % patientID)
+        cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, prov.providerName, mess.senderPT FROM message AS mess INNER JOIN provider AS prov USING (providerID) WHERE mess.patientID = '%d' ORDER BY mess.messageDate DESC " % patientID)
         messages = cur.fetchall()
         return render_template('patient_message.html', patientID=patientID, messages=messages)
 
@@ -277,12 +277,19 @@ def replyMessage(messageID):
     message = Message.query.get_or_404(messageID)
 
     cur = mysql.connection.cursor()
-    cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, pat.patientName, mess.senderPT FROM message AS mess INNER JOIN patient AS pat USING (patientID) INNER JOIN provider AS prov USING (providerID) WHERE mess.messageSubject = '%s' AND mess.patientID = '%d' AND mess.providerID = '%d' ORDER BY mess.messageDate DESC" % (message.messageSubject, message.patientID, message.providerID))
+    cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, pat.patientName, mess.senderPT, prov.providerName FROM message AS mess INNER JOIN patient AS pat USING (patientID) INNER JOIN provider AS prov USING (providerID) WHERE mess.messageSubject = '%s' AND mess.patientID = '%d' AND mess.providerID = '%d' ORDER BY mess.messageDate DESC" % (message.messageSubject, message.patientID, message.providerID))
     messageHistory = cur.fetchall()
+
+    if session['loginType'] == 'prv':
+        template = 'provider_reply_message.html'
+        senderPT = 0
+    else:
+        template = 'patient_reply_message.html'
+        senderPT = 1
 
     if form.validate_on_submit():
 
-        newMessage = Message(messageSubject=form.messageSubject.data, messageBody=form.messageBody.data, patientID=message.patientID, providerID=message.providerID, messageDate=datetime.now(), senderPT=0)
+        newMessage = Message(messageSubject=form.messageSubject.data, messageBody=form.messageBody.data, patientID=message.patientID, providerID=message.providerID, messageDate=datetime.now(), senderPT=senderPT)
         dbAlchemy.session.add(newMessage)
         dbAlchemy.session.commit()
         flash(f'Message sent!', 'success')
@@ -291,10 +298,8 @@ def replyMessage(messageID):
     elif request.method == 'GET':
         form.messageSubject.data = message.messageSubject
 
-    if session['loginType'] == 'prv':
-        return render_template('provider_reply_message.html', message=message, messageHistory=messageHistory, form=form)
-    else:
-        return render_template('patient_reply_message.html', message=message, messageHistory=messageHistory, form=form)
+    return render_template(template, message=message, messageHistory=messageHistory, form=form)
+
 
 # Details to be added
 @app.route("/about")
