@@ -1,0 +1,73 @@
+{% extends "patient_layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Reply to the Message Below</legend>
+            <div class="form-group">
+                {{ form.messageSubject.label(class="form-control-label") }}
+
+                {% if form.messageSubject.errors %}
+                {{ form.messageSubject(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.messageSubject.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.messageSubject(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.messageBody.label(class="form-control-label") }}
+                {% if form.messageBody.errors %}
+                {{ form.messageBody(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.messageBody.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.messageBody(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+
+
+    </form>
+</div>
+<head>
+    Past Messages:
+</head>
+<hr/>
+
+    {% for row in messageHistory %}
+    <div class="list-item" data-id="19">
+
+        <div class="flex"> Message #: {{row[0]}}</a>
+            <div class="item-except text-muted text-sm h-1x">{{'From: ' if row[5] else 'To: '}}{{row[4]}}</div>
+            <div class="item-except text-muted text-sm h-1x">Subject: {{row[1]}}</div>
+        </div>
+        <div class="no-wrap">
+            <div class="item-date text-muted text-sm d-none d-md-block">Message: {{row[2]}}</div>
+
+        </div>
+        <div class="no-wrap">
+            <div class="item-date text-muted text-sm d-none d-md-block">Time: {{row[3]}}</div>
+        </div>
+    </div>
+
+    <hr/>
+
+    {% endfor %}
+<!--<div class="border-top pt-3">
+    <small class="text-muted">
+        Already Have An Account? <a class="ml-2" href="{{ url_for('login') }}">Sign In</a>
+    </small>
+</div>-->
+{% endblock content %}

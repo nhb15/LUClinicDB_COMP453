@@ -291,7 +291,10 @@ def replyMessage(messageID):
     elif request.method == 'GET':
         form.messageSubject.data = message.messageSubject
 
-    return render_template('replyMessage.html', message=message, messageHistory=messageHistory, form=form)
+    if session['loginType'] == 'prv':
+        return render_template('provider_reply_message.html', message=message, messageHistory=messageHistory, form=form)
+    else:
+        return render_template('patient_reply_message.html', message=message, messageHistory=messageHistory, form=form)
 
 # Details to be added
 @app.route("/about")
