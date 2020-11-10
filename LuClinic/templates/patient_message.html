@@ -18,8 +18,8 @@
                     {% for row in messages %}
                     <div class="list-item" data-id="19">
 
-                        <div class="flex"> <a href="#link" class="item-author text-color" data-abc="true">{{row[4]}}</a>
-                            <div class="item-except text-muted text-sm h-1x">{{'Incoming Message ' if row[5] else 'Outgoing Message'}}</div>
+                        <div class="flex"> <a class="item-author text-color" data-abc="true">{{'To provider: ' if row[5] else 'From provider: '}}{{row[4]}}</a>
+
                             <div class="item-except text-muted text-sm h-1x">Subject: {{row[1]}}</div>
                         </div>
                         <div class="no-wrap">

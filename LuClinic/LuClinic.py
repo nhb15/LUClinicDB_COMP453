@@ -247,14 +247,25 @@ def myMessages():
 
     email = session['email']
     cur = mysql.connection.cursor()
-    cur.execute("SELECT providerID FROM provider WHERE providerEmail = '%s'" % email)
 
-    providerID = cur.fetchone()
-    #Need to figure out best way to order by
-    cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, pat.patientName, mess.senderPT FROM message AS mess INNER JOIN patient AS pat USING (patientID) WHERE mess.providerID = '%d' ORDER BY mess.messageDate DESC " % providerID)
-    messages = cur.fetchall()
+    if session['loginType'] == 'prv':
 
-    return render_template('provider_message.html', providerID=providerID, messages=messages)
+        cur.execute("SELECT providerID FROM provider WHERE providerEmail = '%s'" % email)
+        providerID = cur.fetchone()
+
+        #Need to figure out best way to order by
+        cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, pat.patientName, mess.senderPT FROM message AS mess INNER JOIN patient AS pat USING (patientID) WHERE mess.providerID = '%d' ORDER BY mess.messageDate DESC " % providerID)
+        messages = cur.fetchall()
+
+        return render_template('provider_message.html', providerID=providerID, messages=messages)
+    else:
+        cur.execute("SELECT patientID FROM patient WHERE patientEmail = '%s'" % email)
+        patientID = cur.fetchone()
+
+        #Need to figure out best way to order by
+        cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, prov.providerName, mess.senderPT FROM message AS mess INNER JOIN provider AS prov USING (providerID) INNER JOIN patient AS pat WHERE pat.patientID = '%d' ORDER BY mess.messageDate DESC " % patientID)
+        messages = cur.fetchall()
+        return render_template('patient_message.html', patientID=patientID, messages=messages)
 
 
 @app.route("/messages/<messageID>/reply", methods=['GET', 'POST'])
