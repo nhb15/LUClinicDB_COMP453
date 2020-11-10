@@ -32,6 +32,14 @@ class MedicationForm(FlaskForm):
 class ModifyPatientForm(FlaskForm):
     #FIXME: Updating an email should technically update the login table
 
+    patientID = HiddenField()
+    patientName = StringField("Patient Name", validators=[DataRequired(),Length(min=1, max=30)])
+    patientAddress = StringField("Patient Address", validators=[DataRequired(),Length(min=1, max=50)])
+    patientPhone = StringField("Patient Phone", validators=[DataRequired(),Length(min=1, max=10)])
+    patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
+    patientPCP = SelectField("Patient PCP", coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Confirm changes on this patient')
+
     #If we validate against login, we won't know if we're just trying to change the same record, which will bounce back at us
     #We'll need to validate against both the provider and patient tables to make sure nobody has used the email.
     def validatePatientEmail(self):
@@ -40,14 +48,6 @@ class ModifyPatientForm(FlaskForm):
         provider = dbAlchemy.session.query(Provider).filter_by(providerEmail=self.patientEmail.data).first()
         if (patient and patient.patientID != self.patientID.data) or provider:
             raise ValidationError('That email is already being used. Please enter a different one!')
-
-    patientID = HiddenField()
-    patientName = StringField("Patient Name", validators=[DataRequired(),Length(min=1, max=30)])
-    patientAddress = StringField("Patient Address", validators=[DataRequired(),Length(min=1, max=50)])
-    patientPhone = StringField("Patient Phone", validators=[DataRequired(),Length(min=1, max=10)])
-    patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
-    patientPCP = SelectField("Patient PCP", coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Confirm changes on this patient')
 
 
 

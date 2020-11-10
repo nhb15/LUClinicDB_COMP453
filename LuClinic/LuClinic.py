@@ -178,11 +178,12 @@ def modifyPatient(patientID):
         #patient.patientPCP = form.patientPCP.data
 
         #Patient.query(Patient).filter_by(patientID == patientID).update({'patientName' : form.patientName.data})
-        dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data))
+        #if form.validatePatientEmail():
+            dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data))
 
-        dbAlchemy.session.commit()
-        flash(f'Patient {form.patientName.data} modified!', 'success')
-        return redirect(url_for('myPatients'))
+            dbAlchemy.session.commit()
+            flash(f'Patient {form.patientName.data} modified!', 'success')
+            return redirect(url_for('myPatients'))
 
     elif request.method == 'GET':
         form.patientName.data = patient.patientName
@@ -250,7 +251,7 @@ def myMessages():
 
     providerID = cur.fetchone()
     #Need to figure out best way to order by
-    cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, pat.patientName FROM message AS mess INNER JOIN patient AS pat USING (patientID) WHERE mess.providerID = '%d' ORDER BY mess.messageDate DESC " % providerID)
+    cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, pat.patientName, mess.senderPT FROM message AS mess INNER JOIN patient AS pat USING (patientID) WHERE mess.providerID = '%d' ORDER BY mess.messageDate DESC " % providerID)
     messages = cur.fetchall()
 
     return render_template('provider_message.html', providerID=providerID, messages=messages)
@@ -265,7 +266,7 @@ def replyMessage(messageID):
     message = Message.query.get_or_404(messageID)
 
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM message AS mess INNER JOIN patient AS pat USING (patientID) INNER JOIN provider AS prov USING (providerID) WHERE mess.messageSubject = '%s' AND mess.patientID = '%d' AND mess.providerID = '%d'" % (message.messageSubject, message.patientID, message.providerID))
+    cur.execute("SELECT mess.messageID, mess.messageSubject, mess.messageBody, mess.messageDate, pat.patientName, mess.senderPT FROM message AS mess INNER JOIN patient AS pat USING (patientID) INNER JOIN provider AS prov USING (providerID) WHERE mess.messageSubject = '%s' AND mess.patientID = '%d' AND mess.providerID = '%d' ORDER BY mess.messageDate DESC" % (message.messageSubject, message.patientID, message.providerID))
     messageHistory = cur.fetchall()
 
     if form.validate_on_submit():
