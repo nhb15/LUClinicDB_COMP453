@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField, ValidationError, HiddenField, TextAreaField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
+from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange, StopValidation
+from wtforms.widgets import HiddenInput
+
 from .__init__ import dbAlchemy
 from .models import Patient, Login, Provider
 
@@ -46,8 +48,9 @@ class ModifyPatientForm(FlaskForm):
         patient = dbAlchemy.session.query(Patient).filter_by(patientEmail=self.patientEmail.data).first()
 
         provider = dbAlchemy.session.query(Provider).filter_by(providerEmail=self.patientEmail.data).first()
-        if (patient and patient.patientID != self.patientID.data) or provider:
-            raise ValidationError('That email is already being used. Please enter a different one!')
+        if (patient and patient.patientID != self.patientID) or provider:
+            return 0
+            #raise ValidationError('That email is already being used. Please enter a different one!')
 
 
 

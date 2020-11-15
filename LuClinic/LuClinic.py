@@ -184,6 +184,8 @@ def modifyPatient(patientID):
             dbAlchemy.session.commit()
             flash(f'Patient {form.patientName.data} modified!', 'success')
             return redirect(url_for('myPatients'))
+        #else:
+         #   form.patientEmail.errors.append('test error')
 
     elif request.method == 'GET':
         form.patientName.data = patient.patientName
