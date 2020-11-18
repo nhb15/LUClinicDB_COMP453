@@ -7,15 +7,12 @@ from .__init__ import dbAlchemy
 from .models import Patient, Login, Provider
 
 
-
-
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
-
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -24,12 +21,11 @@ class LoginForm(FlaskForm):
     # patientType = BooleanField('Patient')
     # providerType = BooleanField('Provider')
     submit = SubmitField('Login')
-    
+
 class MedicationForm(FlaskForm):
     med = StringField('Medication', validators=[DataRequired()])
     dailyFreq = IntegerField('Number of Times Taken Daily', validators=[DataRequired(), NumberRange(min=0, max=None)])
     submit = SubmitField('Add this medication')
-
 
 class ModifyPatientForm(FlaskForm):
     #FIXME: Updating an email should technically update the login table
@@ -52,10 +48,6 @@ class ModifyPatientForm(FlaskForm):
             return 0
             #raise ValidationError('That email is already being used. Please enter a different one!')
 
-
-
-
-
 class AddPatientForm(ModifyPatientForm):
     #Inherit from Modify Patient Form - change the submit button.
     #patientName = StringField("Patient Name", validators=[DataRequired(),Length(min=1, max=30)])
@@ -64,7 +56,6 @@ class AddPatientForm(ModifyPatientForm):
     #patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
     #patientPCP = SelectField("Patient PCP", coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add this patient')
-
 
 class replyMessageForm(FlaskForm):
 
@@ -75,6 +66,4 @@ class replyMessageForm(FlaskForm):
     messageBody = TextAreaField("Body", validators=[DataRequired(), Length(min=1, max=1000)])
     submit = SubmitField('Send Message')
 
-
 #Ideas for forms: Update Patient, Delete (cancel) appointment, Create Appt
-

@@ -36,13 +36,16 @@ def testdb():
 
     return render_template('testdb.html', patient=patient, message=message, provider=provider, visit=visit, patientTable=patientTable, testQuery=testQuery)
 
+
 # LOGGED OUT FLOW -------------------->
+
 
 # currently redirects to login
 @app.route("/")
 @app.route("/home")
 def home():
   return redirect(url_for('login'))
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -69,12 +72,14 @@ def login():
 
   return render_template('login.html', title='Login', form=form)
 
+
 # currently redirects to login
 @app.route("/logout")
 def logout():
   # We clear all sessions
   session.clear()
   return redirect(url_for('login'))
+
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -86,7 +91,9 @@ def register():
       return redirect(url_for('home'))
   return render_template('register.html', title='Register', form=form)
 
+
 # LOGGED IN FLOW -------------------->
+
 
 @app.route("/profile")
 # @login_required # This is a decorator to only allow user to see the page if they are logged in
@@ -113,6 +120,7 @@ def profile():
     flash(f'Please login first!', 'danger')
     return redirect(url_for('login'))
 
+
 @app.route("/myPatients")
 # @login_required # This is a decorator to only allow user to see the page if they are logged in
 def myPatients():
@@ -128,6 +136,7 @@ def myPatients():
     patientCount = cur.fetchone()
 
     return render_template('myPatients.html', patientTable=patientTable, patientCount=patientCount)
+
 
 @app.route("/addPatient", methods=['GET', 'POST'])
 # @login_required # This is a decorator to only allow user to see the page if they are logged in
@@ -150,6 +159,7 @@ def addPatient():
         flash(f'Patient {form.patientName.data} added!', 'success')
         return redirect(url_for('profile'))
     return render_template('addPatient.html', title='Add a Patient', form=form)
+
 
 @app.route("/modifyPatient/<patientID>", methods=['GET', 'POST'])
 # @login_required # This is a decorator to only allow user to see the page if they are logged in
@@ -195,6 +205,7 @@ def modifyPatient(patientID):
         form.patientPCP.data = patient.patientPCP
     return render_template('modifyPatient.html', title='Modify a Patient', form=form)
 
+
 @app.route("/deletePatient/<patientID>", methods=['POST'])
 # @login_required # This is a decorator to only allow uer to see the page if they are logged in
 def delete_patient(patientID):
@@ -218,14 +229,20 @@ def addMedication():
 @app.route("/appointments", methods=['GET'])
 def appointments():
     email = session['email']
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT patientID FROM patient WHERE patientEmail = '%s'" % email)
-    patientID = cur.fetchone()
 
-    cur.execute("SELECT visitID, visitDate, visit.providerID, providerName, visitStatus FROM visit, provider WHERE patientID = '%d' AND visit.providerID = provider.providerID" % patientID)
-    appointments = cur.fetchall()
+    patient_info = Patient.query.filter_by(patientEmail=email).first()
+
+    #cur = mysql.connection.cursor()
+    #cur.execute("SELECT patientID FROM patient WHERE patientEmail = '%s'" % email)
+    #patientID = cur.fetchone()
+
+    appointments = Visit.query.filter_by(patientID=patient_info.patientID).all()
+
+    #cur.execute("SELECT visitID, visitDate, visit.providerID, providerName, visitStatus FROM visit, provider WHERE patientID = '%d' AND visit.providerID = provider.providerID" % patientID)
+    #appointments = cur.fetchall()
 
     return render_template('appointments.html', appointments=appointments)
+
 
 @app.route("/visit/<visitID>")
 def visit(visitID):
