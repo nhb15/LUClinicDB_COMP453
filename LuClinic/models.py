@@ -40,4 +40,36 @@ class Message(dbAlchemy.Model):
 
     __table__ = dbAlchemy.Model.metadata.tables['message']
 
+class Lab_Test(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['lab_test']
+
+class Lab_Order(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['lab_order']
+
+class Diagnosis(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['diagnosis']
+
+class Health_Issues(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['health_issues']
+
+class Medication(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['medication']
+
+class Prescription(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['prescription']
+
+class Allergen(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['allergen']
+
+class Allergy(dbAlchemy.Model):
+
+    __table__ = dbAlchemy.Model.metadata.tables['allergy']
+
 dbAlchemy.create_all()
