@@ -77,9 +77,9 @@ ERD located in Documentation folder.
 
 - **Include one query using Flask-SQLAlchemy filter or filter_by.**
 
-    * In progress (Anshul)
+    * See Appointments (Valerie) and in progress (Anshul).
 
-- **Inlcude at least one SELECT using an aggregate function.  Use regualr SQL for this.**
+- **Inlcude at least one SELECT using an aggregate function.  Use regular SQL for this.**
   * Within the myPatients route, we select a count of the patients for the logged in provider. (Nate)
 `cur.execute("SELECT DISTINCT COUNT(patientID) FROM patient WHERE patientPCP = '%d'" % providerID)`
 
@@ -89,7 +89,7 @@ ERD located in Documentation folder.
 
 - **Include at least one JOIN query using SQL, and also one using Flask-SQLAlchemy.**
 
-  * In progress - View Appointments and Patient Profile (Valerie).
+  * See View Appointments -- uses SQLAlchemy (Valerie) and Patient Profile -- uses SQL (in progress - Valerie).
 
 - **Include at least one subquery.  Regular SQL.  Excellence points if you also use Flask-SQLAlchemy.**
 
@@ -97,7 +97,7 @@ ERD located in Documentation folder.
 
 - **Use a form to collect user data, as shown in our CRUD labs.**
 
-  * See Registration Form
+    * See Registration Form (in progress - Anshul).
 
 - **Populate a field on a form or table from the database.  This would most likely be for your update, and you can model this directly off of our examples in class.**
 
@@ -109,7 +109,7 @@ ERD located in Documentation folder.
 
 - **Implement referential intergrity.  Demonstrate what happens when it is violated. Or, if you constructed your program so that it can't be violated, demonstrate how it references a primary key and prevents a violation of referential intergrity.  For example, if employee has a foreign key deptNo that references the primary key deptNo in the relation Department.  If you populate a drop-down box with existing department numbers, this will prevent the user from entering an invalid department number, thereby enforcing referential integrity.  We did something similar in Lab-4-c.  If you just have a text box, the user can enter a department number that doesn't exist, and you can demonstrate that this will cause a referential integrity error.  Either method is fine, but be clear on what you are trying to achieve and demonstrate.**
 
-  * In progress (Valerie).
+  * All tables have foreign keys to prevent violations. There are no tables with the same attributes that aren't foreign keys. For example, if a patient e-mail is updated in the Patient table through the Modify Patient route, it also updates the login table because patientEmail is a foreign key in this instance. (Valerie)
 
 - **Use an appropriate structure for your project package.  Any of the structures that we used in class is fine.  I would recommend using the structure that we used for Lab-4-c, as that is a good starting point for the project.**
 
