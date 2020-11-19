@@ -3,14 +3,13 @@
   <article class="media content-section">
     <div class="media-body">
       <div class="article-metadata">
-        <a class="mr-2" href="#">{{ visit.visitDate }}</a>
-          <div>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#" }}">Reschedule</a>
-            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Cancel</button>
-          </div>
+        <h2 class="article-title">Scheduled Appointment with {{ visit.providerName }}</h2>
+        <div>
+          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="#" }}">Reschedule</a>
+          <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Cancel</button>
+        </div>
       </div>
       <h2 class="article-title">{{ visit.visitDate }}</h2>
-      <p class="article-content">{{ visit.providerID }}</p>
     </div>
   </article>
   <!-- Modal -->

@@ -232,22 +232,20 @@ def appointments():
 
     patient_info = Patient.query.filter_by(patientEmail=email).first()
 
-    #cur = mysql.connection.cursor()
-    #cur.execute("SELECT patientID FROM patient WHERE patientEmail = '%s'" % email)
-    #patientID = cur.fetchone()
-
-    appointments = Visit.query.filter_by(patientID=patient_info.patientID).all()
-
-    #cur.execute("SELECT visitID, visitDate, visit.providerID, providerName, visitStatus FROM visit, provider WHERE patientID = '%d' AND visit.providerID = provider.providerID" % patientID)
-    #appointments = cur.fetchall()
+    appointments = Visit.query.join(Provider, Visit.providerID == Provider.providerID). \
+    filter(Visit.patientID == patient_info.patientID). \
+    add_columns(Provider.providerName, Visit.visitDate, Visit.visitStatus, Visit.visitID)
 
     return render_template('appointments.html', appointments=appointments)
 
 
-@app.route("/visit/<visitID>")
+@app.route("/visit/<visitID>", methods=['GET'])
 def visit(visitID):
-    visit = Visit.query.get_or_404(visitID)
+    visit = Visit.query.join(Provider, Visit.providerID == Provider.providerID). \
+    filter(Visit.visitID == visitID). \
+    add_columns(Visit.visitDate, Visit.visitID, Provider.providerName).first()
     return render_template('visit.html', title=visit.visitID, visit=visit)
+
 
 @app.route("/visit/<visitID>/cancel", methods=['POST'])
 def cancel_visit(visitID):
