@@ -3,7 +3,6 @@ from sqlalchemy import ForeignKey
 from .__init__ import dbAlchemy
 
 #Maybe we use reflection or automapping if we need more than this..
-
 dbAlchemy.Model.metadata.reflect(dbAlchemy.engine)
 
 class Provider(dbAlchemy.Model):
@@ -39,5 +38,6 @@ class Visit(dbAlchemy.Model):
 class Message(dbAlchemy.Model):
 
     __table__ = dbAlchemy.Model.metadata.tables['message']
+
 
 dbAlchemy.create_all()

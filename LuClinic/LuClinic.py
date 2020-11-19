@@ -3,7 +3,7 @@
 # pip install pry.py
 
 from flask import Flask, render_template, url_for, flash, redirect, request, session
-from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm, replyMessageForm
+from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm, replyMessageForm, ActivatePatientForm, RegisterProviderForm
 from datetime import datetime
 from sqlalchemy.orm import sessionmaker, Session
 
@@ -19,6 +19,7 @@ from .__init__ import mysql, dbAlchemy, app
 
 @app.route("/testdb")
 def testdb():
+    # import pry; pry()
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM patient")
     patient = cur.fetchall()
@@ -48,9 +49,9 @@ def home():
 def login():
   form = LoginForm()
   if form.validate_on_submit():
-    # Reasons for login table: We run search on email and password on a smaller table.
-    # We only query customer/provider tables once we need to load the profile pages.
-    # We don't ask the user to mention whether they are patient or provider.
+    if form.email.data == 'admin@luc.edu' and form.password.data == 'admin':
+      session['email'] = 'admin@luc.edu'
+      return redirect(url_for('admin'))
 
     cur = mysql.connection.cursor()
     cur.execute("SELECT loginType FROM login where email = %s AND password = %s", (form.email.data, form.password.data))
@@ -60,7 +61,6 @@ def login():
     if loginType:
       session['email'] = form.email.data
       session['loginType'] = 'pat' if loginType[0] == 'pat' else 'prv'
-      #import pry; pry()
       flash('Logged in successfully!', 'success')
       return redirect(url_for('profile'))
     else:
@@ -69,52 +69,82 @@ def login():
 
   return render_template('login.html', title='Login', form=form)
 
-# currently redirects to login
 @app.route("/logout")
 def logout():
-  # We clear all sessions
   session.clear()
   return redirect(url_for('login'))
 
-@app.route("/register", methods=['GET', 'POST'])
+@app.route("/register")
 def register():
-  form = RegistrationForm()
+  return render_template('register.html')
+
+@app.route("/activatePatient", methods=['GET', 'POST'])
+def activatePatient():
+  form = ActivatePatientForm()
   if form.validate_on_submit():
-      # Add patient/provder to respictive table with an insert
-      # Also add email password and login_type to login table with an insert
-      flash(f'Account created for {form.username.data}!', 'success')
-      return redirect(url_for('home'))
-  return render_template('register.html', title='Register', form=form)
+
+      cur = mysql.connection.cursor()
+      cur.execute("SELECT patientEmail FROM patient where patientEmail = %s", (form.email.data))
+      
+      providerDetails = cur.fetchone()
+
+      if providerDetails:
+        cur.execute("SELECT email FROM login where email = %s", (form.email.data))
+        login_exists = cur.fetchone()
+
+        if login_exists:
+          flash('Patient Already exists, please login', 'danger')
+          return redirect(url_for('login'))
+        else:
+          cur.execute("INSERT INTO login VALUES %s, %s, 'pat'", (form.email.data, form.password.data))
+          flash(f'Account registered for {providerDetails[0]}! Please login with your new credentials', 'success')
+      else:
+        flash('Registration Failed. Please check email or contact your doctor.', 'danger')
+      return redirect(url_for('register'))
+  return render_template('activate_patient.html', title='ActivatePatient', form=form)  
+
+@app.route("/registerProvider", methods=['GET', 'POST'])
+def registerProvider():
+  form = RegisterProviderForm()
+  if form.validate_on_submit():
+    cur.execute("SELECT email FROM login where email = %s", (form.email.data))
+    login_exists = cur.fetchone()
+
+    if login_exists:
+      flash('Patient Already exists, please login', 'danger')
+      return redirect(url_for('login'))
+    else:
+      cur = mysql.connection.cursor()
+      cur.execute("INSERT INTO provider VALUES %s, %s, %s, %s, %s", (form.providerLicense.data, form.providerSpeciality.data, form.providerNPI.data,form.providerEmail.data, form.providerName.data))
+      
+      cur.execute("INSERT INTO login VALUES %s, %s, 'prv'", (form.providerEmail.data, form.email.password))
+      flash(f'Provider Account created! Please login with your new credentials', 'success')
+      return redirect(url_for('login'))
+  return render_template('register_provider.html', title='RegisterProvider', form=form)
 
 # LOGGED IN FLOW -------------------->
 
 @app.route("/profile")
-# @login_required # This is a decorator to only allow user to see the page if they are logged in
 def profile():
-  # import pry; pry()
   if session['email']:
     email = session['email']
     if session['loginType'] == 'prv':
-        # Find the tuple using the email id
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
-        # Using fetchone instead of fetchall since we know it will return one value
-        prvDetails = cur.fetchall()
-        # session['providerId'] = patients_id from above query
-        return render_template('provider_profile.html', title='Provider Profile', provider_details=prvDetails)
+      cur = mysql.connection.cursor()
+      cur.execute("SELECT * FROM provider where providerEmail = '%s'" % str(email))
+      prvDetails = cur.fetchall()
+      return render_template('provider_profile.html', title='Provider Profile', provider_details=prvDetails)
     else:
-        # Find the tuple using the email id in patient
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM patient where patientEmail = '%s'" % str(email))
-        patient_details = cur.fetchall()
-        # create session['provider_id'] = patients_id from above query
-        return render_template('patient_profile.html', title='Patient Profile', patient_details=patient_details)
+      # Find the tuple using the email id in patient
+      cur = mysql.connection.cursor()
+      cur.execute("SELECT * FROM patient where patientEmail = '%s'" % str(email))
+      patient_details = cur.fetchall()
+      # create session['provider_id'] = patients_id from above query
+      return render_template('patient_profile.html', title='Patient Profile', patient_details=patient_details)
   else:
     flash(f'Please login first!', 'danger')
     return redirect(url_for('login'))
 
 @app.route("/myPatients")
-# @login_required # This is a decorator to only allow user to see the page if they are logged in
 def myPatients():
     email = session['email']
     cur = mysql.connection.cursor()
@@ -130,7 +160,6 @@ def myPatients():
     return render_template('myPatients.html', patientTable=patientTable, patientCount=patientCount)
 
 @app.route("/addPatient", methods=['GET', 'POST'])
-# @login_required # This is a decorator to only allow user to see the page if they are logged in
 # Send email to LOGIN for this and modifyPatient and check email validator
 def addPatient():
     cur = mysql.connection.cursor()
@@ -302,6 +331,37 @@ def replyMessage(messageID):
 
     return render_template(template, message=message, messageHistory=messageHistory, form=form)
 
+@app.route("/admin", methods=['GET'])
+def admin():
+    if session['email'] != 'admin@luc.edu':
+      return redirect(url_for('login'))
+    
+    # Total patients that have give dosage over 100 mg
+    dosageOverHundred = dbAlchemy.session.query(prescription).filter(prescription.dosage >= 100).count()
+    
+    # Total upcoming appointments in next Month
+    totalUpcomingAppointments = dbAlchemy.session.query(visit).filter_by(visitStatus='Scheduled').count()
+
+    # Total Completed Appointments
+    totalCompletedAppointments = dbAlchemy.session.query(visit).filter_by(visitStatus='Completed').count()
+
+    # INTERSECT COMPOUND
+    # Patients that have visited and messaged
+    # Distinct patients from visit and messages
+    # SQL
+    cur = mysql.connection.cursor()
+    patientCommunication = cur.execute("SELECT DISTINCT patientID FROM message INTERSECT SELECT DISTINCT patientID FROM visit")
+    
+    # Patients that have both Atorvastatin and Omeprazole prescribed
+    # Alchemy
+    # TODO ADD JOINS
+    medCombinations = intersect(prescription.select(patientID).where(prescription.medID==4).distinct(), prescription.select(patientID).where(prescription.medID==7).distinct())
+
+    # Subquery
+    # Provider Types in order that have had the most visits?
+    # TODO
+
+    return render_template('admin.html', dosageOverHundred=dosageOverHundred, totalUpcomingAppointments=totalUpcomingAppointments, totalCompletedAppointments=totalCompletedAppointments, patientCommunication=patientCommunication, medCombinations=medCombinations)
 
 # Details to be added
 @app.route("/about")

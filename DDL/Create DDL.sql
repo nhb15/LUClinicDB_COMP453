@@ -71,7 +71,7 @@ create table message(
 
 create table lab_test (
   cpt           char(5)   not null,
-  labName       varchar(15)   not null,
+  labName       varchar(100)   not null,
   labType       char(1),
 
   primary key (cpt)
@@ -90,7 +90,7 @@ create table lab_order (
 
 create table diagnosis (
   icd_10_cm          varchar(7)      not null,
-  diagnosisName      varchar(50)     not null,
+  diagnosisName      varchar(100)     not null,
 
   primary key (icd_10_cm)
 );
@@ -104,7 +104,7 @@ create table health_issues (
 
 create table medication (
   medID       int             not null auto_increment,
-  medName      varchar(50)     not null,
+  medName      varchar(50)    not null,
 
   primary key (medID)
 );
@@ -113,7 +113,7 @@ create table prescription (
   rxID          int             not null auto_increment,
   patientID     int             not null,
   medID         int             not null,
-  dosage        varchar (5)     not null,
+  dosage        varchar (25)    not null,
 
   primary key (rxID)
 );
@@ -121,7 +121,7 @@ create table prescription (
 create table allergen (
   allergenID     int                not null auto_increment,
   allergenName   varchar(20)        not null,
-  allergenType           varchar(10)        not null,
+  allergenType   varchar(25)        not null,
 
   primary key (allergenID)
 );
