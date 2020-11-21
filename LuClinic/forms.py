@@ -34,18 +34,16 @@ class ModifyPatientForm(FlaskForm):
     patientName = StringField("Patient Name", validators=[DataRequired(),Length(min=1, max=30)])
     patientAddress = StringField("Patient Address", validators=[DataRequired(),Length(min=1, max=50)])
     patientPhone = StringField("Patient Phone", validators=[DataRequired(),Length(min=1, max=10)])
-    patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
     patientPCP = SelectField("Patient PCP", coerce=int, validators=[DataRequired()])
     submit = SubmitField('Confirm changes on this patient')
 
-    #If we validate against login, we won't know if we're just trying to change the same record, which will bounce back at us
-    #We'll need to validate against both the provider and patient tables to make sure nobody has used the email.
-    def validatePatientEmail(self):
-        patient = dbAlchemy.session.query(Patient).filter_by(patientEmail=self.patientEmail.data).first()
+    #Validation unneeded- we will not allow providers to change patient emails. If we wanted this, we could validate it against the login table as needed (as long as patientID or providerID are checked as well)
+    #def validatePatientEmail(self):
+    #    patient = dbAlchemy.session.query(Patient).filter_by(patientEmail=self.patientEmail.data).first()
 
-        provider = dbAlchemy.session.query(Provider).filter_by(providerEmail=self.patientEmail.data).first()
-        if (patient and patient.patientID != self.patientID) or provider:
-            return 0
+    #    provider = dbAlchemy.session.query(Provider).filter_by(providerEmail=self.patientEmail.data).first()
+    #    if (patient and patient.patientID != self.patientID) or provider:
+    #        return 0
             #raise ValidationError('That email is already being used. Please enter a different one!')
 
 class AddPatientForm(ModifyPatientForm):
@@ -53,7 +51,7 @@ class AddPatientForm(ModifyPatientForm):
     #patientName = StringField("Patient Name", validators=[DataRequired(),Length(min=1, max=30)])
     #patientAddress = StringField("Patient Address", validators=[DataRequired(),Length(min=1, max=50)])
     #patientPhone = StringField("Patient Phone", validators=[DataRequired(),Length(min=1, max=10)])
-    #patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
+    patientEmail = StringField("Patient Email", validators=[DataRequired(), Email()])
     #patientPCP = SelectField("Patient PCP", coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add this patient')
 

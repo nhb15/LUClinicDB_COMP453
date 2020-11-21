@@ -12,7 +12,7 @@ from MySQLdb.cursors import DictCursor
 # from flask.ext.session import Session
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import Patient, Provider, Visit, Message
+from .models import Patient, Provider, Visit, Message, Login
 from .__init__ import mysql, dbAlchemy, app
 # from flask_login import LoginManager, current_user, login_required
 
@@ -150,7 +150,10 @@ def addPatient():
 
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
-        #FIXME: perform addition AND any necesary specific validations
+        #FIXME: perform addition AND any necesary specific
+        login = Login(email=form.patientEmail.data, password='pass', loginType='pat')
+        dbAlchemy.session.add(login)
+        dbAlchemy.session.commit()
 
         patient = Patient(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data)
         dbAlchemy.session.add(patient)
@@ -189,7 +192,7 @@ def modifyPatient(patientID):
 
         #Patient.query(Patient).filter_by(patientID == patientID).update({'patientName' : form.patientName.data})
         #if form.validatePatientEmail():
-            dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data))
+            dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientPCP=form.patientPCP.data))
 
             dbAlchemy.session.commit()
             flash(f'Patient {form.patientName.data} modified!', 'success')
@@ -201,7 +204,6 @@ def modifyPatient(patientID):
         form.patientName.data = patient.patientName
         form.patientAddress.data = patient.patientAddress
         form.patientPhone.data = patient.patientPhone
-        form.patientEmail.data = patient.patientEmail
         form.patientPCP.data = patient.patientPCP
     return render_template('modifyPatient.html', title='Modify a Patient', form=form)
 
