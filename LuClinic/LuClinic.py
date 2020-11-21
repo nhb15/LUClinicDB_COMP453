@@ -72,22 +72,14 @@ def login():
 
   return render_template('login.html', title='Login', form=form)
 
-<<<<<<< HEAD
-=======
-
 # currently redirects to login
->>>>>>> 3b2d591bbe01a1a4014c0a9aa0b14b2971d6bfdb
 @app.route("/logout")
 def logout():
   session.clear()
   return redirect(url_for('login'))
 
-<<<<<<< HEAD
-@app.route("/register")
-=======
 
 @app.route("/register", methods=['GET', 'POST'])
->>>>>>> 3b2d591bbe01a1a4014c0a9aa0b14b2971d6bfdb
 def register():
   return render_template('register.html')
 
