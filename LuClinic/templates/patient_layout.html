@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
 {% block sidebar_content %}
-    <li class="list-group-item list-group-item-light">Patient Info</li>
+    <li class="list-group-item list-group-item-light">
+      <a class="nav-item nav-link" href="{{ url_for('profile') }}">Patient Info</a>
+    </li>
     <li class="list-group-item list-group-item-light">
       <a class="nav-item nav-link" href="{{ url_for('appointments') }}">Appointments</a>
     </li>
