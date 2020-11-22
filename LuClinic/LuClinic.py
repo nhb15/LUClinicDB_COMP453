@@ -112,7 +112,7 @@ def profile():
     else:
         # Find the tuple using the email id in patient
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM patient where patientEmail = '%s'" % str(email))
+        cur.execute("SELECT pat.patientID, pat.patientName, pat.patientAddress, pat.patientPhone, prov.providerName, pat.patientEmail FROM patient AS pat INNER JOIN provider AS prov WHERE pat.patientPCP=prov.providerID AND patientEmail = '%s'" % str(email))
         patient_details = cur.fetchall()
         # create session['provider_id'] = patients_id from above query
         return render_template('patient_profile.html', title='Patient Profile', patient_details=patient_details)
