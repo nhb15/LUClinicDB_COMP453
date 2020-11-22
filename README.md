@@ -51,7 +51,7 @@ See ERD located in Documentation folder.
 
 - **Include at least one structural change to the database using DDL.  (Create, Alter, Drop). Clearly, your application will be written on one version of the design.  So you may satisfy this requirement by discussing what changes in the business requirements might precipitate a change in the design, and how would you implement that?  An example would be:  the design is based on the reality that every employee is assigned to exactly one department.  But the company has changed its management structure to a more project-based structure, and now, employees can be assigned to multiple departments.  This necessitates a change in the cardinaly of department:employee from 1:n to m:n.  This now requires a new relationship entity.  Other examples might include changing the format of a zip code from XXXXX to XXXXX-xxxx.**
 
-   * Currently, patients cannot reschedule appointments themselves.  Instead, a request to reschedule is sent as a message to the provider.  If patients were given the ability to reschedule on their own, they would need to know what days/times are available for scheduling. To accomplish this, another table (appointment_times) would need to be added with information about provider schedules and available appointment slots.  This table would have a 1:1 relationship with both the provider and visit tables (each available slot could only have one scheduled visit with one provider). ProviderID would be added as a FK in the appointment_times table and the visit table would need an additional FK referencing the PK of the appointment_times tuple that it references. (Valerie)
+   * Currently, patients cannot reschedule appointments themselves. (The 'Reschedule' button does nothing.)  If patients were given the ability to reschedule on their own, they would need to know what days/times are available for scheduling. To accomplish this, another table (appointment_times) would need to be added with information about provider schedules and available appointment slots.  This table would have a 1:1 relationship with both the provider and visit tables (each available slot could only have one scheduled visit with one provider). ProviderID would be added as a FK in the appointment_times table and the visit table would need an additional FK referencing the PK of the appointment_times tuple that it references. (Valerie)
 
 - **Provide the DDL as well as the INSERT SQL for creating the tables and initially populating the database.  You may do this in any text editor and then paste into the SQL window of PHMyAdmin, or you may use the DDL from the terminal or from within a Python program, as demonstrated in class.**
 
@@ -87,7 +87,7 @@ See ERD located in Documentation folder.
 
 - **Include at least one JOIN query using SQL, and also one using Flask-SQLAlchemy.**
 
-  * See View Appointments -- uses SQLAlchemy (Valerie) and Patient Profile -- uses SQL (in progress - Valerie).
+  * See View Appointments -- uses SQLAlchemy (Valerie) and Patient Profile -- uses SQL (Valerie).
 
 - **Include at least one subquery.  Regular SQL.  Excellence points if you also use Flask-SQLAlchemy.**
 
@@ -107,7 +107,7 @@ See ERD located in Documentation folder.
 
 - **Implement referential intergrity.  Demonstrate what happens when it is violated. Or, if you constructed your program so that it can't be violated, demonstrate how it references a primary key and prevents a violation of referential intergrity.  For example, if employee has a foreign key deptNo that references the primary key deptNo in the relation Department.  If you populate a drop-down box with existing department numbers, this will prevent the user from entering an invalid department number, thereby enforcing referential integrity.  We did something similar in Lab-4-c.  If you just have a text box, the user can enter a department number that doesn't exist, and you can demonstrate that this will cause a referential integrity error.  Either method is fine, but be clear on what you are trying to achieve and demonstrate.**
 
-  * All tables have foreign keys to prevent violations. There are no tables with the same attributes that aren't foreign keys. For example, if a patient e-mail is updated in the Patient table through the Modify Patient route, it also updates the login table because patientEmail is a foreign key in this instance. (Valerie)
+  * All tables have foreign keys to prevent violations. There are no tables with the same attributes that aren't foreign keys. If something is updated in one table that has a foreign key link in another, it updates both tables. (Valerie)
 
 - **Use an appropriate structure for your project package.  Any of the structures that we used in class is fine.  I would recommend using the structure that we used for Lab-4-c, as that is a good starting point for the project.**
 

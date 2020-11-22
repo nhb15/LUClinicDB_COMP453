@@ -3,15 +3,15 @@
   <article class="media content-section">
     <div class="media-body">
       <div class="article-metadata">
-        Patient Profile - {{patient_details[0][1]}}
+        Patient Profile - {{patient_details[0][0]}}
       </div>
       <br>
       <div>
-        Address: {{patient_details[0][2]}}
+        Address: {{patient_details[0][1]}}
         <br>
-        Phone: {{patient_details[0][3]}}
+        Phone: {{patient_details[0][2]}}
         <br>
-        Email: {{patient_details[0][5]}}
+        Email: {{patient_details[0][3]}}
         <br>
       </div>
       <br>
@@ -19,17 +19,35 @@
         Primary Care Provider: {{patient_details[0][4]}}
         <br>
         Next Appointment:
+        {% for visit in visits %}
+          {{visit.visitDate}}
+          {{visit.visitStatus}}
+          {{visit.providerName}}
+        {% endfor %}
         <br>
         Upcoming Lab Tests:
+        {% for lab in labOrders %}
+          {{lab.labName}}
+        {% endfor %}
         <br>
       </div>
       <br>
       <div>
         Medications:
+        {% for med in meds %}
+          {{med.medName}}
+          {{med.dosage}}
+        {% endfor %}
         <br>
         Allergies:
+        {% for allergy in allergies %}
+          {{allergy.allergenName}}
+        {% endfor %}
         <br>
         Health Issues:
+        {% for issue in issues %}
+          {{issue.diagnosisName}}
+        {% endfor %}
         <br>
       </div>
     </div>
