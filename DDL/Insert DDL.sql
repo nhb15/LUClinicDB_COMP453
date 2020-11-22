@@ -78,7 +78,7 @@ INSERT INTO lab_order
 (patientID, cpt, orderDate, completeDate, results)
 values
 (1, "10165", '2018-06-12', '2018-07-12', "Normal"),
-(1, "14852", '2020-04-19', '2020-04-23', NULL),
+(1, "14852", '2020-04-19', NULL, NULL),
 (2, "07020", '2011-03-10', '2011-03-13', "Abnormal"),
 (2, "05463", '2019-01-31', '2011-02-02', "Normal"),
 (4, "17306", '2020-09-22', NULL, NULL),

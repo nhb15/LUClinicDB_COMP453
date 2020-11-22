@@ -12,7 +12,7 @@ from MySQLdb.cursors import DictCursor
 # from flask.ext.session import Session
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import Patient, Provider, Visit, Message, Login
+from .models import Patient, Provider, Visit, Message, Login, Lab_Order, Lab_Test, Diagnosis, Health_Issues, Medication, Prescription, Allergen, Allergy
 from .__init__ import mysql, dbAlchemy, app
 # from flask_login import LoginManager, current_user, login_required
 
@@ -112,10 +112,42 @@ def profile():
     else:
         # Find the tuple using the email id in patient
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM patient where patientEmail = '%s'" % str(email))
+
+        cur.execute("SELECT patientID FROM patient WHERE patientEmail = '%s'" % email)
+        patientID = cur.fetchone()
+
+        cur.execute("SELECT patientName, patientAddress, patientPhone, patientEmail, providerName FROM patient, provider WHERE patient.patientPCP = provider.providerID AND patient.patientEmail = '%s'" % str(email))
         patient_details = cur.fetchall()
+
+        visits = Visit.query.join(Patient, Visit.patientID == Patient.patientID). \
+        join(Provider, Patient.patientPCP == Provider.providerID). \
+        filter(Visit.patientID == patientID, Visit.visitStatus == 'Scheduled'). \
+        add_columns(Visit.visitDate, Visit.visitStatus, Visit.providerID, Provider.providerName)
+
+        #cur.execute("SELECT providerID, visitDate, visitStatus FROM patient, visit WHERE visit.patientID = '%d' AND visit.patientID = patient.patientID AND visitStatus = 'Scheduled'" % patientID)
+        #visits = cur.fetchall()
+
+        labOrders = Lab_Order.query.join(Lab_Test, Lab_Test.cpt == Lab_Order.cpt). \
+        filter(Lab_Order.completeDate == None, Lab_Order.patientID == patientID). \
+        add_columns(Lab_Test.labName)
+
+        #cur.execute("SELECT labName FROM patient, lab_test, lab_order WHERE patient.patientID = lab_order.patientID AND lab_test.cpt = lab_order.cpt AND completeDate IS NULL AND lab_order.patientID = '%d'" %patientID)
+        #labOrders = cur.fetchall()
+
+        meds = Prescription.query.join(Medication, Prescription.medID == Medication.medID). \
+        filter(Prescription.patientID == patientID). \
+        add_columns(Medication.medName, Prescription.dosage)
+
+        allergies = Allergy.query.join(Allergen, Allergy.allergenID == Allergen.allergenID). \
+        filter(Allergy.patientID == patientID). \
+        add_columns(Allergen.allergenName)
+
+        issues = Health_Issues.query.join(Diagnosis, Health_Issues.icd_10_cm == Diagnosis.icd_10_cm). \
+        filter(Health_Issues.patientID == patientID). \
+        add_columns(Diagnosis.diagnosisName)
+
         # create session['provider_id'] = patients_id from above query
-        return render_template('patient_profile.html', title='Patient Profile', patient_details=patient_details)
+        return render_template('patient_profile.html', title='Patient Profile', patient_details=patient_details, visits=visits, labOrders=labOrders, meds=meds, allergies=allergies, issues=issues)
   else:
     flash(f'Please login first!', 'danger')
     return redirect(url_for('login'))
