@@ -1,9 +1,49 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
-        <legend class="border-bottom mb-4">Here is the All time Admin report:</legend>
-    </div>
-    <div class="content-section">
-        <p>Total Number of Patients: {{totalPatients}}</p>
+        <legend class="border-bottom mb-4">Admin report:</legend>
+		<p>Total Number of Scheduled Appointments: {{totalUpcomingAppointments}}</p>
+		<p>Patient IDs that have visited and messaged providers:
+		{% for pid in patientCommunication %}
+		  <span>{{ pid[0] }}</span>
+		{% endfor %}
+		</p>
+		<p>Patient IDs that have Atorvastatin and Omeprazole prescribed:
+		{% for pid in medCombinations %}
+		  <span>{{ pid[0] }}</span>
+		{% endfor %}
+		</p>
+	</div>
+	<div class="content-section">
+		<p>Providers with most visits:</p>
+		<table border="1" cellpadding="5" cellspacing="5">
+		  <tr>
+		    <th>Provider ID</th>
+			<th>Visit Count</th>
+		  </tr>
+		{% for prvid in providerVisitCount %}
+		    <tr>
+		        <td>{{ prvid[0] }}</td>
+				<td>{{ prvid[1] }}</td>
+		    </tr>
+		{% endfor %}
+        </table>
+	</div>
+	<div class="content-section">
+		<p>Patients prescribed mg dosage<p>
+		<table border="1" cellpadding="5" cellspacing="5">
+		  <tr>
+		    <th>Patient ID</th>
+			<th>Patient Name</th>
+			<th>Patient Email</th>
+		  </tr>
+		{% for pid in mgDose %}
+		    <tr>
+		      <td>{{ pid.patientID }}</td>
+			  <td>{{ pid.patientName }}</td>
+			  <td>{{ pid.patientEmail }}</td>
+		    </tr>
+		{% endfor %}
+		</table>
     </div>
 {% endblock content %}

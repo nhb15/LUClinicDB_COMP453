@@ -1,22 +1,15 @@
-# Please run the following in your prompt:
-# pip install Flask-Session
-# pip install pry.py
-
 from flask import Flask, render_template, url_for, flash, redirect, request, session
 from .forms import RegistrationForm, LoginForm, MedicationForm, AddPatientForm, ModifyPatientForm, replyMessageForm, ActivatePatientForm, RegisterProviderForm
 from datetime import datetime
 from sqlalchemy.orm import sessionmaker, Session
 
 from MySQLdb.cursors import DictCursor
-
-# from flask.ext.session import Session
 from flask_sqlalchemy import SQLAlchemy
-
-from .models import Patient, Provider, Visit, Message
+from sqlalchemy import intersect, func
+from .models import Patient, Provider, Visit, Message, Prescription, Login, Diagnosis, Medication, Allergen, Allergy
 from .__init__ import mysql, dbAlchemy, app
-# from flask_login import LoginManager, current_user, login_required
 
-
+#LabTest LabOrder HealthIssues
 @app.route("/testdb")
 def testdb():
     # import pry; pry()
@@ -351,32 +344,38 @@ def admin():
     if session['email'] != 'admin@luc.edu':
       return redirect(url_for('login'))
     
-    # Total patients that have give dosage over 100 mg
-    dosageOverHundred = dbAlchemy.session.query(prescription).filter(prescription.dosage >= 100).count()
-    
     # Total upcoming appointments in next Month
-    totalUpcomingAppointments = dbAlchemy.session.query(visit).filter_by(visitStatus='Scheduled').count()
+    totalUpcomingAppointments = dbAlchemy.session.query(Visit).filter(Visit.visitStatus=='Scheduled').count() # 5
 
     # Total Completed Appointments
-    totalCompletedAppointments = dbAlchemy.session.query(visit).filter_by(visitStatus='Completed').count()
+    totalCompletedAppointments = dbAlchemy.session.query(Visit).filter(Visit.visitStatus=='Completed').count() # 6
 
     # INTERSECT COMPOUND
     # Patients that have visited and messaged
     # Distinct patients from visit and messages
     # SQL
+    # Out of 6 patients on 1,3,4 and 6 have both visited and messaged
     cur = mysql.connection.cursor()
-    patientCommunication = cur.execute("SELECT DISTINCT patientID FROM message INTERSECT SELECT DISTINCT patientID FROM visit")
+    cur.execute("SELECT DISTINCT patientID FROM message INTERSECT SELECT DISTINCT patientID FROM visit") # 1,3,4 and 6
+    patientCommunication = cur.fetchall()
     
     # Patients that have both Atorvastatin and Omeprazole prescribed
-    # Alchemy
-    # TODO ADD JOINS
-    medCombinations = intersect(prescription.select(patientID).where(prescription.medID==4).distinct(), prescription.select(patientID).where(prescription.medID==7).distinct())
-
-    # Subquery
-    # Provider Types in order that have had the most visits?
-    # TODO
-
-    return render_template('admin.html', dosageOverHundred=dosageOverHundred, totalUpcomingAppointments=totalUpcomingAppointments, totalCompletedAppointments=totalCompletedAppointments, patientCommunication=patientCommunication, medCombinations=medCombinations)
+    # Shows compond sql in Alchemy
+    ator = dbAlchemy.session.query(Prescription.patientID).filter(Prescription.medID==4)
+    omep = dbAlchemy.session.query(Prescription.patientID).filter(Prescription.medID==7)
+    medCombinations = ator.intersect(omep).all()
+    #medCombinations = intersect(Prescription.select(Prescription.patientID).where(Prescription.medID==4).distinct(), Prescription.select(Prescription.patientID).where(Prescription.medID==7).distinct())
+   
+    # Group BY SQLALchemy
+    # Providers with most vists and count.
+    providerVisitCount = dbAlchemy.session.query(Visit.providerID, func.count(Visit.providerID)).group_by(Visit.providerID).all()
+    
+    # Subquery and somewhat a complex query
+    # List of all Patients that have been prescribed 'mg' dosage
+    subquery = dbAlchemy.session.query(Prescription.patientID).filter(Prescription.dosage.like('%mg%')).subquery()
+    mgDose = dbAlchemy.session.query(Patient).filter(Patient.patientID.in_(subquery)).all()
+   
+    return render_template('admin.html', mgDose=mgDose, totalUpcomingAppointments=totalUpcomingAppointments, totalCompletedAppointments=totalCompletedAppointments, patientCommunication=patientCommunication, medCombinations=medCombinations, providerVisitCount=providerVisitCount)
 
 # Details to be added
 @app.route("/about")
@@ -384,4 +383,4 @@ def about():
   return render_template('about.html', title='About')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 
