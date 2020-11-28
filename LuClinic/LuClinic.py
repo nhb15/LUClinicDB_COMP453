@@ -6,10 +6,10 @@ from sqlalchemy.orm import sessionmaker, Session
 from MySQLdb.cursors import DictCursor
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import intersect, func
-from .models import Patient, Provider, Visit, Message, Prescription, Login, Diagnosis, Medication, Allergen, Allergy
+from .models import Patient, Provider, Visit, Message, Prescription, Login, Diagnosis, Medication, Allergen, Allergy, Lab_Order, Lab_Test, Health_Issues
 from .__init__ import mysql, dbAlchemy, app
+import ipdb
 
-#LabTest LabOrder HealthIssues
 @app.route("/testdb")
 def testdb():
     # import pry; pry()
@@ -82,40 +82,50 @@ def activatePatient():
   if form.validate_on_submit():
 
       cur = mysql.connection.cursor()
-      cur.execute("SELECT patientEmail FROM patient where patientEmail = %s", (form.email.data))
-      
-      providerDetails = cur.fetchone()
+      cur.execute("SELECT patientEmail FROM patient where patientEmail = '%s'" % form.email.data)
 
-      if providerDetails:
-        cur.execute("SELECT email FROM login where email = %s", (form.email.data))
+      patientDetails = cur.fetchone()
+
+      if patientDetails:
+        cur.execute("SELECT email FROM login where email = '%s'" % form.email.data)
         login_exists = cur.fetchone()
 
         if login_exists:
           flash('Patient Already exists, please login', 'danger')
           return redirect(url_for('login'))
         else:
-          cur.execute("INSERT INTO login VALUES %s, %s, 'pat'", (form.email.data, form.password.data))
-          flash(f'Account registered for {providerDetails[0]}! Please login with your new credentials', 'success')
+
+            login = Login(email=form.email.data, password=form.password.data, loginType='pat')
+            dbAlchemy.session.add(login)
+            dbAlchemy.session.commit()
+            #cur.execute("INSERT INTO login VALUES (%s, %s, 'pat')", (form.email.data, form.password.data))
+
+            flash(f'Account registered for {patientDetails[0]}! Please login with your new credentials', 'success')
       else:
         flash('Registration Failed. Please check email or contact your doctor.', 'danger')
       return redirect(url_for('register'))
-  return render_template('activate_patient.html', title='ActivatePatient', form=form)  
+  return render_template('activate_patient.html', title='ActivatePatient', form=form)
 
 @app.route("/registerProvider", methods=['GET', 'POST'])
 def registerProvider():
   form = RegisterProviderForm()
   if form.validate_on_submit():
-    cur.execute("SELECT email FROM login where email = %s", (form.email.data))
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT email FROM login where email = '%s'" % form.providerEmail.data)
     login_exists = cur.fetchone()
 
     if login_exists:
-      flash('Patient Already exists, please login', 'danger')
+      flash('Provider Already exists, please login', 'danger')
       return redirect(url_for('login'))
     else:
-      cur = mysql.connection.cursor()
-      cur.execute("INSERT INTO provider VALUES %s, %s, %s, %s, %s", (form.providerLicense.data, form.providerSpeciality.data, form.providerNPI.data,form.providerEmail.data, form.providerName.data))
-      
-      cur.execute("INSERT INTO login VALUES %s, %s, 'prv'", (form.providerEmail.data, form.email.password))
+
+      provider = Provider(providerLicense=form.providerLicense.data, providerSpecialty=form.providerSpeciality.data, providerNPI=form.providerNPI.data, providerEmail=form.providerEmail.data, providerName=form.providerName.data)
+      login = Login(email=form.providerEmail.data, password=form.password.data, loginType='prv')
+      dbAlchemy.session.add(provider)
+      dbAlchemy.session.commit()
+      dbAlchemy.session.add(login)
+      dbAlchemy.session.commit()
+
       flash(f'Provider Account created! Please login with your new credentials', 'success')
       return redirect(url_for('login'))
   return render_template('register_provider.html', title='RegisterProvider', form=form)
@@ -206,10 +216,6 @@ def addPatient():
 
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
-        #FIXME: perform addition AND any necesary specific
-        login = Login(email=form.patientEmail.data, password='pass', loginType='pat')
-        dbAlchemy.session.add(login)
-        dbAlchemy.session.commit()
 
         patient = Patient(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data)
         dbAlchemy.session.add(patient)
@@ -237,17 +243,7 @@ def modifyPatient(patientID):
     form.patientID = patientID
 
     if form.validate_on_submit():
-        #FIXME: perform modification
-        #setattr(patient, 'patientName', form.patientName.data)
-        #alchemySession.add(patient)
-        #patient.patientName = form.patientName.data
-        #patient.patientAddress = form.patientAddress.data
-        #patient.patientPhone = form.patientPhone.data
-        #patient.patientEmail = form.patientEmail.data
-        #patient.patientPCP = form.patientPCP.data
 
-        #Patient.query(Patient).filter_by(patientID == patientID).update({'patientName' : form.patientName.data})
-        #if form.validatePatientEmail():
             dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientPCP=form.patientPCP.data))
 
             dbAlchemy.session.commit()
