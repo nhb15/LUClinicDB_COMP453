@@ -175,8 +175,6 @@ values
 (6, NULL, 8, "itchy eyes");
 
 alter table patient ADD foreign key (patientPCP) references provider(providerID);
-alter table patient ADD foreign key (patientEmail) references login(email);
-alter table provider ADD foreign key (providerEmail) references login(email);
 alter table visit ADD foreign key (providerID) references provider(providerID);
 alter table visit ADD foreign key (patientID) references patient(patientID);
 alter table message ADD foreign key (patientID) references patient(patientID);
