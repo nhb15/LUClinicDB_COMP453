@@ -107,11 +107,11 @@ See ERD located in Documentation folder.
 
 - **Implement referential intergrity.  Demonstrate what happens when it is violated. Or, if you constructed your program so that it can't be violated, demonstrate how it references a primary key and prevents a violation of referential intergrity.  For example, if employee has a foreign key deptNo that references the primary key deptNo in the relation Department.  If you populate a drop-down box with existing department numbers, this will prevent the user from entering an invalid department number, thereby enforcing referential integrity.  We did something similar in Lab-4-c.  If you just have a text box, the user can enter a department number that doesn't exist, and you can demonstrate that this will cause a referential integrity error.  Either method is fine, but be clear on what you are trying to achieve and demonstrate.**
 
-  * All tables have foreign keys to prevent violations. There are no tables with the same attributes that aren't foreign keys. If something is updated in one table that has a foreign key link in another, it updates both tables. (Valerie)
+  * All tables have foreign keys to prevent violations except for the Login table, which allows patients to register asynchronously from a Patient record being created for them. There are no other tables with the same attributes that aren't foreign keys. If something is updated in one table that has a foreign key link in another, it updates both tables. The system is specifically set up to avoid patient email integrity violations by not allowing anyone to edit the patient email. (Valerie) (Nate)
 
 - **Use an appropriate structure for your project package.  Any of the structures that we used in class is fine.  I would recommend using the structure that we used for Lab-4-c, as that is a good starting point for the project.**
 
-  * In progress (Nate and Anshul).
+  * In progress (Nate and Anshul). The LuClinic file holds all the routes, exclusively. 
 
 ---
 
@@ -138,3 +138,12 @@ See ERD located in Documentation folder.
 - **Javascript, JQuery, other client-side programming**
 
     * In progress (Anshul).
+    
+    
+# Known Broken Links
+
+- ** Not an exhaustive list yet, but to start: **
+
+  *Appointments when logged in as a provider
+  
+  *Rescheduling an appointment when viewing a specific appointment as a patient
