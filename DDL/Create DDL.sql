@@ -104,8 +104,7 @@ create table health_issues (
 
 create table medication (
   medID       int             not null auto_increment,
-  medName      varchar(100)     not null,
-
+  medName      varchar(50)    not null,
   primary key (medID)
 );
 
@@ -113,15 +112,16 @@ create table prescription (
   rxID          int             not null auto_increment,
   patientID     int             not null,
   medID         int             not null,
-  dosage        varchar (20)     not null,
+  dosage        varchar (25)    not null,
 
   primary key (rxID)
 );
 
 create table allergen (
   allergenID     int                not null auto_increment,
-  allergenName   varchar(100)        not null,
-  allergenType           varchar(20)        not null,
+  allergenName   varchar(20)        not null,
+  allergenType   varchar(25)        not null,
+
 
   primary key (allergenID)
 );

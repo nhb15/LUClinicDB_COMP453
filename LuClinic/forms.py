@@ -6,6 +6,21 @@ from wtforms.widgets import HiddenInput
 from .__init__ import dbAlchemy
 from .models import Patient, Login, Provider
 
+class RegisterProviderForm(FlaskForm):
+    providerLicense = StringField('License Number', validators=[DataRequired(),Length(min=1, max=10)])
+    providerSpeciality = StringField('Speciality', validators=[DataRequired()])
+    providerNPI = StringField('NPI', validators=[DataRequired(),Length(min=1, max=10)])
+    providerName = StringField('Name', validators=[DataRequired()])
+    providerEmail = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')
+
+class ActivatePatientForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])

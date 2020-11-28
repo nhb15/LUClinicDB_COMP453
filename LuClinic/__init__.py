@@ -32,8 +32,3 @@ engine = create_engine(CONN_STR)
 #Session = sessionmaker(bind=engine)
 
 #alchemySession = Session()
-
-
-
-
-

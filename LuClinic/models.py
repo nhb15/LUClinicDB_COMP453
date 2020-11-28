@@ -3,7 +3,6 @@ from sqlalchemy import ForeignKey
 from .__init__ import dbAlchemy
 
 #Maybe we use reflection or automapping if we need more than this..
-
 dbAlchemy.Model.metadata.reflect(dbAlchemy.engine)
 
 class Provider(dbAlchemy.Model):
