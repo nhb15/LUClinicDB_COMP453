@@ -16,8 +16,8 @@ DROP TABLE IF EXISTS allergy;
 
 create table patient(
   patientID           int               not null auto_increment,
-  patientName         varchar(30)       not null,
-  patientAddress      varchar(50)       not null,
+  patientName         varchar(50)       not null,
+  patientAddress      varchar(100)       not null,
   patientPhone        char(10)          not null,
   patientPCP          int,
   patientEmail	      varchar(255),
@@ -28,9 +28,9 @@ create table patient(
 
 create table provider(
   providerID          int               not null auto_increment,
-  providerName        varchar(30)       not null,
+  providerName        varchar(50)       not null,
   providerLicense     varchar(10)       not null,
-  providerSpecialty   varchar(30)       not null,
+  providerSpecialty   varchar(50)       not null,
   providerNPI         char(10)          not null,
   providerEmail       varchar(255),
 
@@ -60,7 +60,7 @@ create table message(
   messageID          int             not null auto_increment,
   patientID          int             not null,
   providerID         int             not null,
-  messageSubject     varchar(30),
+  messageSubject     varchar(50),
   messageBody        varchar(1000)   not null,
   messageDate        DATETIME        not null,
   senderPT           BOOLEAN        not null,
@@ -83,7 +83,7 @@ create table lab_order (
   cpt             varchar(15)   not null,
   orderDate       DATE          not null,
   completeDate    DATE,
-  results         varchar(50),
+  results         varchar(100),
 
   primary key (orderID)
 );
@@ -105,7 +105,6 @@ create table health_issues (
 create table medication (
   medID       int             not null auto_increment,
   medName      varchar(50)    not null,
-
   primary key (medID)
 );
 
@@ -123,6 +122,7 @@ create table allergen (
   allergenName   varchar(20)        not null,
   allergenType   varchar(25)        not null,
 
+
   primary key (allergenID)
 );
 
@@ -131,7 +131,7 @@ create table allergy (
   patientID     int           not null,
   medID         int,
   allergenID    int,
-  reaction      varchar(25)   not null,
+  reaction      varchar(100)   not null,
 
   primary key (allergyID)
 );

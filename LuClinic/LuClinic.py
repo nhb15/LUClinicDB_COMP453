@@ -134,12 +134,46 @@ def profile():
       prvDetails = cur.fetchall()
       return render_template('provider_profile.html', title='Provider Profile', provider_details=prvDetails)
     else:
-      # Find the tuple using the email id in patient
-      cur = mysql.connection.cursor()
-      cur.execute("SELECT * FROM patient where patientEmail = '%s'" % str(email))
-      patient_details = cur.fetchall()
-      # create session['provider_id'] = patients_id from above query
-      return render_template('patient_profile.html', title='Patient Profile', patient_details=patient_details)
+
+        # Find the tuple using the email id in patient
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT patientID FROM patient WHERE patientEmail = '%s'" % email)
+        patientID = cur.fetchone()
+
+        cur.execute("SELECT patientName, patientAddress, patientPhone, patientEmail, providerName FROM patient, provider WHERE patient.patientPCP = provider.providerID AND patient.patientEmail = '%s'" % str(email))
+        patient_details = cur.fetchall()
+
+        visits = Visit.query.join(Patient, Visit.patientID == Patient.patientID). \
+        join(Provider, Patient.patientPCP == Provider.providerID). \
+        filter(Visit.patientID == patientID, Visit.visitStatus == 'Scheduled'). \
+        add_columns(Visit.visitDate, Visit.visitStatus, Visit.providerID, Provider.providerName)
+
+        #cur.execute("SELECT providerID, visitDate, visitStatus FROM patient, visit WHERE visit.patientID = '%d' AND visit.patientID = patient.patientID AND visitStatus = 'Scheduled'" % patientID)
+        #visits = cur.fetchall()
+
+        labOrders = Lab_Order.query.join(Lab_Test, Lab_Test.cpt == Lab_Order.cpt). \
+        filter(Lab_Order.completeDate == None, Lab_Order.patientID == patientID). \
+        add_columns(Lab_Test.labName)
+
+        #cur.execute("SELECT labName FROM patient, lab_test, lab_order WHERE patient.patientID = lab_order.patientID AND lab_test.cpt = lab_order.cpt AND completeDate IS NULL AND lab_order.patientID = '%d'" %patientID)
+        #labOrders = cur.fetchall()
+
+        meds = Prescription.query.join(Medication, Prescription.medID == Medication.medID). \
+        filter(Prescription.patientID == patientID). \
+        add_columns(Medication.medName, Prescription.dosage)
+
+        allergies = Allergy.query.join(Allergen, Allergy.allergenID == Allergen.allergenID). \
+        filter(Allergy.patientID == patientID). \
+        add_columns(Allergen.allergenName)
+
+        issues = Health_Issues.query.join(Diagnosis, Health_Issues.icd_10_cm == Diagnosis.icd_10_cm). \
+        filter(Health_Issues.patientID == patientID). \
+        add_columns(Diagnosis.diagnosisName)
+
+        # create session['provider_id'] = patients_id from above query
+        return render_template('patient_profile.html', title='Patient Profile', patient_details=patient_details, visits=visits, labOrders=labOrders, meds=meds, allergies=allergies, issues=issues)
+
   else:
     flash(f'Please login first!', 'danger')
     return redirect(url_for('login'))
@@ -172,7 +206,10 @@ def addPatient():
 
     form.patientPCP.choices = providerNames
     if form.validate_on_submit():
-        #FIXME: perform addition AND any necesary specific validations
+        #FIXME: perform addition AND any necesary specific
+        login = Login(email=form.patientEmail.data, password='pass', loginType='pat')
+        dbAlchemy.session.add(login)
+        dbAlchemy.session.commit()
 
         patient = Patient(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data)
         dbAlchemy.session.add(patient)
@@ -211,7 +248,7 @@ def modifyPatient(patientID):
 
         #Patient.query(Patient).filter_by(patientID == patientID).update({'patientName' : form.patientName.data})
         #if form.validatePatientEmail():
-            dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientEmail=form.patientEmail.data, patientPCP=form.patientPCP.data))
+            dbAlchemy.session.query(Patient).filter_by(patientID = patientID).update(dict(patientName=form.patientName.data, patientAddress=form.patientAddress.data, patientPhone=form.patientPhone.data, patientPCP=form.patientPCP.data))
 
             dbAlchemy.session.commit()
             flash(f'Patient {form.patientName.data} modified!', 'success')
@@ -223,7 +260,6 @@ def modifyPatient(patientID):
         form.patientName.data = patient.patientName
         form.patientAddress.data = patient.patientAddress
         form.patientPhone.data = patient.patientPhone
-        form.patientEmail.data = patient.patientEmail
         form.patientPCP.data = patient.patientPCP
     return render_template('modifyPatient.html', title='Modify a Patient', form=form)
 
