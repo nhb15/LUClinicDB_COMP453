@@ -82,8 +82,19 @@ See ERD located in Documentation folder.
 `cur.execute("SELECT DISTINCT COUNT(patientID) FROM patient WHERE patientPCP = '%d'" % providerID)`
 
 - **Include at least one SELECT using a compound condition using regular SQL, and also the equivalent of a compound condition select using Flask-SQLAlchemy.**
-
-    * In progress (Anshul).
+      
+    * SQL : /admin route LuClinic.py Line 389 (Anshul)
+      Patient ID's of all the patients that have both messaged and visited.
+      ```
+      SELECT DISTINCT patientID FROM message INTERSECT SELECT DISTINCT patientID FROM visit
+      ```
+    * Flask-SQLAlchemy :  /admin route LuClinic.py Line 398 (Anshul)
+      Patients that have both Atorvastatin and Omeprazole prescribed
+      ```
+      ator = dbAlchemy.session.query(Prescription.patientID).filter(Prescription.medID==4)
+      omep = dbAlchemy.session.query(Prescription.patientID).filter(Prescription.medID==7)
+      medCombinations = ator.intersect(omep).all()
+      ```
 
 - **Include at least one JOIN query using SQL, and also one using Flask-SQLAlchemy.**
 
@@ -91,11 +102,21 @@ See ERD located in Documentation folder.
 
 - **Include at least one subquery.  Regular SQL.  Excellence points if you also use Flask-SQLAlchemy.**
 
-    * In progress (Anshul).
+    * Flask-SQLAlchemy : /admin route LuClinic.py Line 411(Anshul)
+      List of all Patients that have been prescribed 'mg' dosage
+      ```
+       subquery = dbAlchemy.session.query(Prescription.patientID).filter(Prescription.dosage.like('%mg%')).subquery()
+       mgDose = dbAlchemy.session.query(Patient).filter(Patient.patientID.in_(subquery)).all()
+      ```      
+    
+    * SQL : (Anshul)
+      ```sql
+      SELECT * FROM Patients WHERE patientID IN (SELECT patientID FROM Prescription WHERE dosage like '%mg%')
+      ```
 
 - **Use a form to collect user data, as shown in our CRUD labs.**
 
-    * See Registration Form (in progress - Anshul).
+    * /registerProvider and /registerPatient routes LuClinic.py Line 79 and 104 (Anshul)
 
 - **Populate a field on a form or table from the database.  This would most likely be for your update, and you can model this directly off of our examples in class.**
 
@@ -111,7 +132,7 @@ See ERD located in Documentation folder.
 
 - **Use an appropriate structure for your project package.  Any of the structures that we used in class is fine.  I would recommend using the structure that we used for Lab-4-c, as that is a good starting point for the project.**
 
-  * In progress (Nate and Anshul). The LuClinic file holds all the routes, exclusively. 
+  * (Nate and Anshul). The LuClinic file holds all the routes, exclusively. 
 
 ---
 
@@ -119,7 +140,7 @@ See ERD located in Documentation folder.
 
 - **Using additional flask or flask-sqlalchemy features that we did not cover in class.**
 
-  * Using Flask-Session (Anshul).
+  * Using Flask-Session (Anshul). WebApp uses session to log-in users and mantain their login status. When they logout or close the browser the session keys are cleared.
 
 - **Using additonal WTForms components that we did not cover in class. (Examples:  importing other html form components that we did not demonstrate in class; check boxes, radio buttons, etc. multiple drop-down boxes)**
 
@@ -127,7 +148,12 @@ See ERD located in Documentation folder.
 
 - **A Flask-SQLAlchemy subquery.**
 
-    * In progress (Anshul).
+    * Flask-SQLAlchemy : /admin route LuClinic.py Line 411(Anshul)
+      List of all Patients that have been prescribed 'mg' dosage
+      ```
+       subquery = dbAlchemy.session.query(Prescription.patientID).filter(Prescription.dosage.like('%mg%')).subquery()
+       mgDose = dbAlchemy.session.query(Patient).filter(Patient.patientID.in_(subquery)).all()
+      ```
 
 - **An especially complex query.**
 
@@ -136,8 +162,6 @@ See ERD located in Documentation folder.
 - **Additions to your html that add to the functionality, navigability or appeal of your website.  This includes bootstrap that we didn't use in class.**
 
 - **Javascript, JQuery, other client-side programming**
-
-    * In progress (Anshul).
     
     
 # Known Broken Links
