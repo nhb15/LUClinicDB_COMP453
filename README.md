@@ -67,7 +67,7 @@ See ERD located in Documentation folder.
 
 - **Include at least one delete of a record.  Use SQLAlchemy.**
 
-  * See cancel_visit (Valerie).
+  * See cancel_visit in LuClinic.py, lines 304-310 (Valerie).
 
 - **Include at least one simple SELECT SQL statement.  Use regular SQL for this.  This will require a database connection using one of packages that were showed in Lab-4-connect.**
 
@@ -75,7 +75,7 @@ See ERD located in Documentation folder.
 
 - **Include one query using Flask-SQLAlchemy filter or filter_by.**
 
-    * See Appointments (Valerie) and in progress (Anshul).
+    * See appointments in LuClnic.py, lines 283-293 (Valerie). This function lists both scheduled and completed appointments for the logged in patient.
 
 - **Inlcude at least one SELECT using an aggregate function.  Use regular SQL for this.**
   * Within the myPatients route, we select a count of the patients for the logged in provider. (Nate)
@@ -98,7 +98,7 @@ See ERD located in Documentation folder.
 
 - **Include at least one JOIN query using SQL, and also one using Flask-SQLAlchemy.**
 
-  * See View Appointments -- uses SQLAlchemy (Valerie) and Patient Profile -- uses SQL (Valerie).
+  * See profile in LuClinic.py, lines 154-155 (uses SQL). This part of the function lists different parts of the patient's health record on their home page. And appointments (uses SQLAlchemy) in LUClinic.py, line 289 (Valerie). This function lists both scheduled and completed appointments for the logged in patient (also uses filter).
 
 - **Include at least one subquery.  Regular SQL.  Excellence points if you also use Flask-SQLAlchemy.**
 
@@ -124,7 +124,7 @@ See ERD located in Documentation folder.
 
 - **Check for empty data fields. You can use the built-in validations for this.**
 
-    * Login/Register (Anshul). And Modify Patient and Add Patient (Nate).
+    * Modify Patient and Add Patient (Nate).
 
 - **Implement referential intergrity.  Demonstrate what happens when it is violated. Or, if you constructed your program so that it can't be violated, demonstrate how it references a primary key and prevents a violation of referential intergrity.  For example, if employee has a foreign key deptNo that references the primary key deptNo in the relation Department.  If you populate a drop-down box with existing department numbers, this will prevent the user from entering an invalid department number, thereby enforcing referential integrity.  We did something similar in Lab-4-c.  If you just have a text box, the user can enter a department number that doesn't exist, and you can demonstrate that this will cause a referential integrity error.  Either method is fine, but be clear on what you are trying to achieve and demonstrate.**
 
