@@ -40,12 +40,6 @@ See ERD located in Documentation folder.
 
 (See PowerPoint presentation.)
 
-**During your demonstration, be sure to point out the technical specifications below. But make sure that the technical features make sense in the context of your application.  For example, if you are demonstrating an aggregate function, you might say, "This is a query that tells us how many orders each customer has placed.  This is useful if we are trying to analyze repeat business.**
-
-**You will probably find it easier to take screen shots of your data entry, validation and queries, and paste them into PPT slides.  In this way, your presentation will be smoother, you won't rely upon scrolling through results or navigating through your application during your presentation.  In addition, you won't have any unpleasant surprises if your server goes down or any other unanticipated issues arise.**
-
----
-
 # Technical Requirements
 **Some of the technical specifications/components of the project:**
 
@@ -59,11 +53,11 @@ See ERD located in Documentation folder.
 
 - **Include at least one insertion of a new record that will occur during the execution of the application.  This will most likely be as the result of a transaction or some component that should be added to the database.  For instance, in our labs, we added a department, and we also added an employee-project assignment.  Both of these required the insertion of a new record in the database.  In regular SQL, this would use the INSERT statement.  However, you should use Flask-SQLAlchemy for this purpose.**
 
-  * See addPatient (Nate)
+  * See addPatient in LuClinic.py, lines 220-222 (Nate). A provider can add a patient to the patient table here. The patient is then added to the login table in the backend         logic. 
 
 - **Include at least one update of a record--changing an existing record, not adding a new one.  Use SQLAlchemy.**
 
-  * See modifyPatient (Nate).
+  * See modifyPatient in LuClinic.py, lines 247-249 (Nate). A provider can modify patient attributes.
 
 - **Include at least one delete of a record.  Use SQLAlchemy.**
 
@@ -71,15 +65,15 @@ See ERD located in Documentation folder.
 
 - **Include at least one simple SELECT SQL statement.  Use regular SQL for this.  This will require a database connection using one of packages that were showed in Lab-4-connect.**
 
-  * See My Patients (Nate).
+  * See myPatients in LuClinic.py, line 196 (Nate). This selects the currently logged in provider's ID. 
 
 - **Include one query using Flask-SQLAlchemy filter or filter_by.**
 
     * See appointments in LuClnic.py, lines 283-293 (Valerie). This function lists both scheduled and completed appointments for the logged in patient.
 
 - **Inlcude at least one SELECT using an aggregate function.  Use regular SQL for this.**
-  * Within the myPatients route, we select a count of the patients for the logged in provider. (Nate)
-`cur.execute("SELECT DISTINCT COUNT(patientID) FROM patient WHERE patientPCP = '%d'" % providerID)`
+
+  * See myPatients in LuClinic.py, line 202 (Nate). This function shows the aggregate count of patients under the care of the logged in provider. 
 
 - **Include at least one SELECT using a compound condition using regular SQL, and also the equivalent of a compound condition select using Flask-SQLAlchemy.**
       
@@ -120,11 +114,11 @@ See ERD located in Documentation folder.
 
 - **Populate a field on a form or table from the database.  This would most likely be for your update, and you can model this directly off of our examples in class.**
 
-    * See Modify Patient (Nate).
+    * See modifyPatient in LuClinic.py, lines 255-259 (Nate). We set the form fields' data equal to our patient tuples from SQLAlchemy. 
 
 - **Check for empty data fields. You can use the built-in validations for this.**
 
-    * Modify Patient and Add Patient (Nate).
+    * See ModifyPatientForm in forms.py, lines 49-52 (Nate). We use the DataRequired() validations for these fields. 
 
 - **Implement referential intergrity.  Demonstrate what happens when it is violated. Or, if you constructed your program so that it can't be violated, demonstrate how it references a primary key and prevents a violation of referential intergrity.  For example, if employee has a foreign key deptNo that references the primary key deptNo in the relation Department.  If you populate a drop-down box with existing department numbers, this will prevent the user from entering an invalid department number, thereby enforcing referential integrity.  We did something similar in Lab-4-c.  If you just have a text box, the user can enter a department number that doesn't exist, and you can demonstrate that this will cause a referential integrity error.  Either method is fine, but be clear on what you are trying to achieve and demonstrate.**
 
@@ -164,10 +158,8 @@ See ERD located in Documentation folder.
 - **Javascript, JQuery, other client-side programming**
     
     
-# Known Broken Links
+# Known/Expected Broken Links
 
-- ** Not an exhaustive list yet, but to start: **
-
-  *Appointments when logged in as a provider
+  *Appointments Report in Sidebar when logged in as a provider
   
   *Rescheduling an appointment when viewing a specific appointment as a patient
