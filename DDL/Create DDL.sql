@@ -80,7 +80,7 @@ create table lab_test (
 create table lab_order (
   orderID         int           not null auto_increment,
   patientID       int           not null,
-  cpt             varchar(15)   not null,
+  cpt             varchar(5)   not null,
   orderDate       DATE          not null,
   completeDate    DATE,
   results         varchar(100),
