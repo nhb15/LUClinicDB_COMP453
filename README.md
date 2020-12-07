@@ -172,5 +172,9 @@ See ERD located in Documentation folder.
 # To run the program: 
 
 Clone this repository.
+
 Run the Create DDL and then the Insert DDL on a database in your localhost.
-Modify db.yaml to match your localhost user and database name. If you are on a Mac, you may have to uncomment and put in your mysql_port information in db_yaml and __init__.py. 
+
+Modify db.yaml to match your localhost user and database name. If you are on a Mac, you may have to uncomment and put in your mysql_port information in db_yaml and __init__.py.
+
+Point Flask at LuClinic.py and run it within Anaconda. 
