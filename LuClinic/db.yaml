@@ -1,0 +1,6 @@
+mysql_host: 'localhost'
+mysql_user: 'username'
+#mysql_port: '8889'
+# Enter your password in field below
+mysql_password: 'password'
+mysql_db: 'team3db'
