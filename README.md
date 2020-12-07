@@ -167,3 +167,10 @@ See ERD located in Documentation folder.
   *Appointments Report in Sidebar when logged in as a provider
   
   *Rescheduling an appointment when viewing a specific appointment as a patient
+  
+  
+# To run the program: 
+
+Clone this repository.
+Run the Create DDL and then the Insert DDL on a database in your localhost.
+Modify db.yaml to match your localhost user and database name. If you are on a Mac, you may have to uncomment and put in your mysql_port information in db_yaml and __init__.py. 
